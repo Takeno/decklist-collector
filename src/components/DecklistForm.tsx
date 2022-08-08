@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 type DecklistFormProps = {
@@ -70,7 +71,11 @@ const VINTAGE_DECKS = [
 
 
 export default function DecklistForm({onSubmit, initialValues = {}}:DecklistFormProps) {
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<DecklistForm>();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<DecklistForm>();
+
+  useEffect(() => {
+    reset(initialValues);
+  }, [reset, initialValues])
 
   return (
     <>

@@ -3,14 +3,15 @@ import Header from "../components/Layout/Header";
 import { PageTitle } from "../components/Typography";
 import {signUp } from "../utils/supabase";
 
+import { useForm } from "react-hook-form";
+
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const { register, handleSubmit, reset, watch, formState: { errors, isSubmitSuccessful, isSubmitting } } = useForm();
 
-  function handleSubmit(e:FormEvent) {
-    e.preventDefault();
-
-    signUp(email);
+  async function onSubmit(data:any) {
+    await signUp(data.email);
+    reset();
   }
 
   return <main>
@@ -21,12 +22,15 @@ export default function Login() {
 
       <p>You will receive an email with a confirmation link to manage your decklists.</p>
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label className="block font-bold text-lg">Insert your email:</label>
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} />
+        <input type="email" {...register("email", { required: true })} />
+        {errors.email && <p className="text-red-700">Email is required</p>}
         <br />
-        <button>Login</button>
+        <button disabled={isSubmitting}>Login</button>
       </form>
+
+      {isSubmitSuccessful && <p className="text-green-700 font-bold">Email sent!</p>}
     </div>
     </main>
 }
