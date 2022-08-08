@@ -7,8 +7,8 @@ import { createNewDecklist, getCurrentRequiredUser, getCurrentUser } from "../ut
 export default function NewDecklist() {
   const router = useRouter();
 
-  const onSubmit:SubmitHandler<DecklistForm> = data => {
-    createNewDecklist(data);
+  const onSubmit:SubmitHandler<DecklistForm> = async data => {
+    await createNewDecklist(data);
 
     router.push('/');
   }

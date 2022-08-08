@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 type DecklistFormProps = {
@@ -70,20 +70,34 @@ const VINTAGE_DECKS = [
 ].sort();
 
 
-export default function DecklistForm({onSubmit, initialValues = {}}:DecklistFormProps) {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<DecklistForm>();
+export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps) {
+  const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<DecklistForm>();
 
   useEffect(() => {
-    reset(initialValues);
-  }, [reset, initialValues])
+    if(initialValues) {
+      reset(initialValues);
+    }
+  }, [reset, initialValues]);
+
+
+  const internalOnSubmit:SubmitHandler<DecklistForm> = async (data) => {
+    try {
+      await onSubmit(data);
+    } catch(e:any) {
+      if(e.code === "23505") {
+        setError('tournament', {type:'custom', message: 'You\'ve already submitted a decklist for this tournament'});
+      }
+    }
+  }
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(internalOnSubmit)}>
         <div className="flex flex-col md:flex-row md:justify-between">
         <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Tournament:</label>
-            <select className="w-full" {...register('tournament')} defaultValue={initialValues.tournament}>
+            <select className="w-full" {...register('tournament', {required: true})}>
+              <option value="">---</option>
               <optgroup label="Saturday Sep. 10th">
                 <option value="Main Modern">Main Modern - Sep. 10th</option>
                 <option value="Super Side Legacy">Super Side Legacy - Sep. 10th</option>
@@ -94,43 +108,49 @@ export default function DecklistForm({onSubmit, initialValues = {}}:DecklistForm
                 <option value="Super Side Modern">Super Side Modern - Sep. 11th</option>
               </optgroup>
             </select>
+            {errors.tournament && <p className="text-red-700">{errors.tournament.message || 'This field is required'}</p>}
           </div>
 
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Player:</label>
-            <input type="text" className="w-full" {...register("player", {required: true})} defaultValue={initialValues.player} />
+            <input type="text" className="w-full" {...register("player", {required: true})} />
+            {errors.player && <p className="text-red-700">This field is required</p>}
           </div>
 
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Deck Archetype:</label>
-            <select className="w-full" {...register('deck_archetype')} defaultValue={initialValues.deck_archetype}>
+            <select className="w-full" {...register('deck_archetype', {required: true})}>
               <option value="">---</option>
-              <option value="other">Other</option>
               <optgroup label="Modern">
                 {MODERN_DECKS.map(deck => <option key={deck} value={deck}>{deck}</option>)}
+                <option value="other">Other</option>
               </optgroup>
               <optgroup label="Legacy">
                 {LEGACY_DECKS.map(deck => <option key={deck} value={deck}>{deck}</option>)}
+                <option value="other">Other</option>
               </optgroup>
               <optgroup label="Vintage">
                 {VINTAGE_DECKS.map(deck => <option key={deck} value={deck}>{deck}</option>)}
+                <option value="other">Other</option>
               </optgroup>
             </select>
+            {errors.deck_archetype && <p className="text-red-700">This field is required</p>}
           </div>
 
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Deck name (optional):</label>
-            <input type="text" className="w-full" {...register("deck_name", {required: true})} defaultValue={initialValues.deck_name} />
+            <input type="text" className="w-full" {...register("deck_name")} />
           </div>
         </div>
 
 
         <label className="block font-bold text-lg mt-6">Decklist:</label>
         <div className="w-full h-40">
-          <textarea className="w-full h-40" {...register('decklist')} defaultValue={initialValues.decklist} />
+          <textarea className="w-full h-40" {...register('decklist', {required: true})} />
+          {errors.decklist && <p className="text-red-700">This field is required</p>}
         </div>
 
-        <button>Save</button>
+        <button disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
       </form>
     </>
   )

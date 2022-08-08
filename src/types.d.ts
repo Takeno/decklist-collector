@@ -7,6 +7,7 @@ type Decklist = {
   player: string
   created_by: string,
   created_at: string,
+  updated_at: string,
 };
 
 type DecklistForm = Pick<Decklist, "deck_name" | "deck_archetype" | "player" | "tournament" | "decklist">
