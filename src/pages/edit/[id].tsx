@@ -15,7 +15,9 @@ export default function EditDecklist() {
   const onSubmit:SubmitHandler<DecklistForm> = async data => {
     await updateDecklist(decklistId, data);
 
-    router.push('/');
+    setTimeout(() => {
+      router.push('/');
+    }, 2000)
   }
 
   if(!data) {

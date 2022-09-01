@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, useWatch } from "react-hook-form";
+import { parseList } from "../utils/decklist";
 
 type DecklistFormProps = {
   initialValues?: Partial<DecklistForm>
@@ -71,7 +72,14 @@ const VINTAGE_DECKS = [
 
 
 export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps) {
-  const { register, handleSubmit, setError, reset, formState: { errors, isSubmitting } } = useForm<DecklistForm>();
+  const { register, handleSubmit, setError, reset, control, formState: { errors, isSubmitting, isSubmitSuccessful } } = useForm<DecklistForm>();
+
+  const decklist = useWatch({
+    control,
+    name: "decklist",
+  });
+
+  const parsedDecklist = parseList(decklist || '');
 
   useEffect(() => {
     if(initialValues) {
@@ -144,11 +152,48 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
         </div>
 
 
-        <label className="block font-bold text-lg mt-6">Decklist:</label>
-        <div className="w-full h-40">
-          <textarea className="w-full h-40" {...register('decklist', {required: true})} />
-          {errors.decklist && <p className="text-red-700">This field is required</p>}
+        <div className="flex flex-col md:flex-row md:justify-between">
+          <div className="md:flex-1 pr-4">
+            <label className="block font-bold text-lg mt-6">Decklist:</label>
+            <div className="w-full">
+              <textarea className="w-full min-h-[240px]" {...register('decklist', {required: true})} />
+              {errors.decklist && <p className="text-red-700">This field is required</p>}
+            </div>
+          </div>
+          <div className="md:flex-1 pr-4">
+            <label className="block font-bold text-lg mt-6">
+              Parsed Decklist ({parsedDecklist.maindeck} / {parsedDecklist.sideboard})
+            </label>
+            <div className="columns-2">
+              {[
+                'Planeswalker',
+                'Creature',
+                'Instant',
+                'Sorcery',
+                'Artifact',
+                'Enchantment',
+                'Land',
+                'Other',
+                'Sideboard'
+              ].map((type) => {
+                if(parsedDecklist.cards.some(c => c.type === type) === false) {
+                  return null;
+                }
+
+                return <div key={type} className="break-inside-avoid-column">
+                  <h3 className="font-bold text-lg mt-2">{type}</h3>
+                  <ul>
+                    {parsedDecklist.cards.filter(c => c.type === type).map((card, i) => (<li key={i}>{card.amount}x {card.name}</li>))}
+                  </ul>
+
+
+                </div>
+              })}
+            </div>
+          </div>
         </div>
+
+        {isSubmitSuccessful && <p className="text-green-700 font-bold">Decklist saved!</p>}
 
         <button disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
       </form>

@@ -10,7 +10,9 @@ export default function NewDecklist() {
   const onSubmit:SubmitHandler<DecklistForm> = async data => {
     await createNewDecklist(data);
 
-    router.push('/');
+    setTimeout(() => {
+      router.push('/');
+    }, 2000)
   }
 
   return (
