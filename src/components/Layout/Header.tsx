@@ -24,9 +24,9 @@ export default function Header() {
           </a>
           </Link>
 
-          <div className="" id="navbar-default">
+          {user && <div className="" id="navbar-default">
             <button onClick={handleLogout} className="block py-2 pr-4 pl-3 text-white">Logout</button>
-          </div>
+          </div>}
         </div>
       </nav>
     </header>
