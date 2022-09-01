@@ -14,10 +14,8 @@ export default function Login() {
     reset();
   }
 
-  return <main>
-    <Header />
-
-    <div className="container mx-auto px-4 mt-6">
+  return (
+    <div className="container mx-auto px-4 mt-6 flex flex-col flex-1 justify-center">
 
       <PageTitle>Register your decklists for 4Seasons Summer!</PageTitle>
 
@@ -36,5 +34,5 @@ export default function Login() {
 
       {isSubmitSuccessful && <p className="text-green-700 font-bold">Email sent!</p>}
     </div>
-    </main>
+  )
 }
