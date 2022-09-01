@@ -12,7 +12,7 @@ const Home: NextPage = () => {
   return (
     <div className="container mx-auto px-4 mt-6">
 
-      <PageTitle>Le tue decklist</PageTitle>
+      <PageTitle>Your decklists for 4Seasons Summer</PageTitle>
 
       <table className="table-auto w-full">
         <thead>
@@ -26,7 +26,7 @@ const Home: NextPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data?.map((decklist) => (
+          {data?.length ? data.map((decklist) => (
             <tr key={decklist.id}>
               <td>{decklist.tournament}</td>
               <td>{decklist.deck_archetype}</td>
@@ -34,16 +34,18 @@ const Home: NextPage = () => {
               {/* <td>{decklist.player}</td> */}
               {/* <td>{formatDate(decklist.created_at)}</td> */}
               <td>{formatDate(decklist.updated_at)}</td>
-              <td><Link href={`/edit/${decklist.id}`}><a>Edit</a></Link></td>
+              <td><Link href={`/edit/${decklist.id}`}><a className='hover:underline'>Edit</a></Link></td>
             </tr>
-          ))}
+          )) : <tr>
+              <td colSpan={4}><p className='text-lg text-center'>You have no registered decks yet.</p></td>
+            </tr>}
         </tbody>
       </table>
 
 
       <div className='flex justify-end'>
         <Link href="/new">
-        <a>
+        <a className='button'>
             New decklist
         </a>
         </Link>

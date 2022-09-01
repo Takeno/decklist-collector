@@ -17,7 +17,7 @@ export default function NewDecklist() {
 
   return (
     <div className="container mx-auto mt-6 px-4">
-      <PageTitle>Nuova decklist</PageTitle>
+      <PageTitle>New decklist</PageTitle>
       <DecklistForm onSubmit={onSubmit} />
     </div>
   )

@@ -122,6 +122,7 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Player:</label>
             <input type="text" className="w-full" {...register("player", {required: true})} />
+            <p className="text-sm italic">Use the same of your companion account.</p>
             {errors.player && <p className="text-red-700">This field is required</p>}
           </div>
 
@@ -185,8 +186,6 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
                   <ul>
                     {parsedDecklist.cards.filter(c => c.type === type).map((card, i) => (<li key={i}>{card.amount}x {card.name}</li>))}
                   </ul>
-
-
                 </div>
               })}
             </div>
@@ -195,7 +194,7 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
 
         {isSubmitSuccessful && <p className="text-green-700 font-bold">Decklist saved!</p>}
 
-        <button disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
+        <button className="button" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
       </form>
     </>
   )
