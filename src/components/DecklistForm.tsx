@@ -120,9 +120,9 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
           </div>
 
           <div className="md:flex-1 pr-4">
-            <label className="block font-bold text-lg">Player:</label>
+            <label className="block font-bold text-lg">Player full name:</label>
             <input type="text" className="w-full" {...register("player", {required: true})} />
-            <p className="text-sm italic">Use the same of your companion account.</p>
+            <p className="text-sm italic">Use the same full name of your companion account.</p>
             {errors.player && <p className="text-red-700">This field is required</p>}
           </div>
 
@@ -157,13 +157,15 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg mt-6">Decklist:</label>
             <div className="w-full">
-              <textarea className="w-full min-h-[240px]" {...register('decklist', {required: true})} />
+              <textarea className="w-full min-h-[240px]" {...register('decklist', {required: true})} placeholder={"4 Goblin Guide\n4 Lava Spike\n\n2 Deflecting Palm"} />
               {errors.decklist && <p className="text-red-700">This field is required</p>}
             </div>
           </div>
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg mt-6">
-              Parsed Decklist ({parsedDecklist.maindeck} / {parsedDecklist.sideboard})
+              Parsed Decklist (
+                {parsedDecklist.maindeck < 60 && <span title="Minimum 60 cards">⚠️</span>}
+                {parsedDecklist.maindeck} / {parsedDecklist.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {parsedDecklist.sideboard})
             </label>
             <div className="columns-2">
               {[
@@ -182,7 +184,9 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
                 }
 
                 return <div key={type} className="break-inside-avoid-column">
-                  <h3 className="font-bold text-lg mt-2">{type}</h3>
+                  <h3 className="font-bold text-lg mt-2">
+                    {type === 'Other' ? <abbr title="Not recognized cards, not a problem">Other</abbr> : type}
+                  </h3>
                   <ul>
                     {parsedDecklist.cards.filter(c => c.type === type).map((card, i) => (<li key={i}>{card.amount}x {card.name}</li>))}
                   </ul>
