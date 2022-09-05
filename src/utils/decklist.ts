@@ -95,7 +95,7 @@ function splitMainSideboard(input:string): [string, string?] {
 }
 
 function splitCardLine(input:string): [number, string] | null {
-  const matches = input.trim().match(/x? *([0-9]+) *x? *([^(]+)/i);
+  const matches = input.trim().match(/^x? *([0-9]+) *x? *([^(]+)/i);
   if(matches === null) {
     return null;
   }

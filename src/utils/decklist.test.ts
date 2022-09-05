@@ -198,6 +198,64 @@ x4 Goblin Guide
       validated: true,
     });
   })
+
+  it('should return correct decklist SOME NUMBERS #5', () => {
+    const parsed = parseList(`Old School Swedish Deck:
+
+    Creatures [9]
+    1 Serendib Djinn
+    4 Serendib Efreet
+    4 Flying Men
+
+    Instants [11]
+    1 Ancestral Recall
+    1 Shatter
+    4 Lightning Bolt
+    1 Mana Drain
+    4 Psionic Blast
+
+    Sorceries [13]
+    3 Recall
+    1 Demonic Tutor
+    1 Fireball
+    1 Mind Twist
+    1 Time Walk
+    1 Timetwister
+    1 Wheel of Fortune
+    4 Chain Lightning
+
+    Artifacts [7]
+    1 Black Lotus
+    1 Chaos Orb
+    1 Mox Jet
+    1 Mox Ruby
+    1 Mox Sapphire
+    1 Sol Ring
+    1 Black Vise
+
+    Lands [20]
+    5 Island
+    1 Tolaria
+    4 Volcanic Island
+    2 Badlands
+    2 City of Brass
+    1 Library of Alexandria
+    1 Strip Mine
+    4 Mishra's Factory
+
+    Sideboard [15]
+    4 Blood Moon
+    3 Shatter
+    2 Hurkyl's Recall
+    3 Black Vise
+    2 Red Elemental Blast
+    1 Blue Elemental Blast
+`);
+
+
+    expect(parsed.maindeck).toEqual(60);
+    expect(parsed.sideboard).toEqual(15);
+  })
 })
 
 describe('Split Maindeck and Sideboard', () => {
