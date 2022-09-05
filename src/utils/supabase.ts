@@ -73,6 +73,17 @@ export async function fetchMyLists():Promise<Decklist[]> {
   return data;
 }
 
+export async function fetchListByTournament(t:string):Promise<Decklist[]> {
+  const {data, error} = await supabase
+    .from('decklists')
+    .select()
+    .eq('tournament', t);
+
+  if(error) throw error;
+
+  return data;
+}
+
 export async function fetchList(id:string):Promise<Decklist|undefined> {
   const {data, error} = await supabase
     .from('decklists')

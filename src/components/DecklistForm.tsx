@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useLayoutEffect } from "react";
 import { useForm, SubmitHandler, useWatch } from "react-hook-form";
 import { parseList } from "../utils/decklist";
@@ -199,6 +200,8 @@ export default function DecklistForm({onSubmit, initialValues}:DecklistFormProps
         {isSubmitSuccessful && <p className="text-green-700 font-bold">Decklist saved!</p>}
 
         <button className="button" disabled={isSubmitting}>{isSubmitting ? 'Saving...' : 'Save'}</button>
+        <br />
+        <Link href="/"><a>Back to the list</a></Link>
       </form>
     </>
   )

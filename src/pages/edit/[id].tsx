@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import useSWR from "swr";
 import { fetchList, updateDecklist } from "../../utils/supabase";
 import DecklistForm from "../../components/DecklistForm";
@@ -21,7 +21,7 @@ export default function EditDecklist() {
   }
 
   if(!data) {
-    return <h1>Boh</h1>
+    return <h1>Loading</h1>
   }
 
   return (
