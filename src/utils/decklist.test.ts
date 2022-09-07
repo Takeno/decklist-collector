@@ -256,6 +256,26 @@ x4 Goblin Guide
     expect(parsed.maindeck).toEqual(60);
     expect(parsed.sideboard).toEqual(15);
   })
+
+  it('should return correct decklist Ragavan #6', () => {
+    const parsed = parseList(`2 Archmage's Charm
+    4 Ragavan, Nimble Pilferer
+    4 Consider
+    4 Counterspell`);
+
+
+    expect(parsed.maindeck).toEqual(14);
+    expect(parsed.sideboard).toEqual(0);
+
+
+    expect(parsed.cards).toContainEqual({
+      amount: 4,
+      name: 'Ragavan, Nimble Pilferer',
+      type: 'Creature',
+      validated: true,
+    });
+
+  })
 })
 
 describe('Split Maindeck and Sideboard', () => {
@@ -358,4 +378,13 @@ describe('Split Maindeck and Sideboard', () => {
 
     expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(3)
   })
-})
+
+  it('#7 with Consider', () => {
+    const decklist = parseList(`2 Archmage's Charm
+    4 Ragavan, Nimble Pilferer
+    4 Consider
+    4 Counterspell`);
+
+    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(0)
+  })
+});

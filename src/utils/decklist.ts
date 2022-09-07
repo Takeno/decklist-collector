@@ -82,7 +82,7 @@ export function parseList(input:string):DecklistParsed {
 }
 
 
-const SIDEBOARD_REGEX = /side(?:board)*:?/i
+const SIDEBOARD_REGEX = /^(?:[^0-9])*side(?:board)*:?/mi
 
 function splitMainSideboard(input:string): [string, string?] {
   if(SIDEBOARD_REGEX.test(input)) {
