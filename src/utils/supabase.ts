@@ -75,9 +75,10 @@ export async function fetchMyLists():Promise<Decklist[]> {
 
 export async function fetchListByTournament(t:string):Promise<Decklist[]> {
   const {data, error} = await supabase
-    .from('decklists')
+    .from<Decklist>('decklists')
     .select()
-    .eq('tournament', t);
+    .eq('tournament', t)
+    .order('created_at', {ascending: true});
 
   if(error) throw error;
 
