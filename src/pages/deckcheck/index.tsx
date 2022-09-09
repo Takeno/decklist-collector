@@ -50,6 +50,8 @@ const Home: NextPage = () => {
           </div>
         </div>
 
+      <h1>{parsedDecklists.length} lists found</h1>
+
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b font-bold">

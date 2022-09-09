@@ -26,6 +26,10 @@ export default function ShowDecklist() {
       <PageTitle>{data.player} {parsedDecklist.maindeck < 60 && <span title="Minimum 60 cards">⚠️</span>}
           {parsedDecklist.maindeck} / {parsedDecklist.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {parsedDecklist.sideboard}</PageTitle>
 
+        <p><span className="font-bold">Archetype:</span> {data.deck_archetype}</p>
+        <p><span className="font-bold">Deck Name:</span> {data.deck_name}</p>
+        <p><span className="font-bold">Tournament:</span> {data.tournament}</p>
+
         <div className="columns-2">
           {[
             'Planeswalker',
@@ -52,6 +56,11 @@ export default function ShowDecklist() {
             </div>
           })}
         </div>
+
+        <hr />
+
+        <h3 className="text-lg font-bold my-4">Source</h3>
+        <p><pre>{data.decklist}</pre></p>
       </div>
   )
 }
