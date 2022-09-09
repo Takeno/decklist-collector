@@ -72,7 +72,8 @@ const Home: NextPage = () => {
               {/* <td>{formatDate(decklist.created_at)}</td> */}
               {/* <td>{formatDate(decklist.updated_at)}</td> */}
               <td>{decklist.parsed.maindeck < 60 && <span title="Minimum 60 cards">⚠️</span>}
-                {decklist.parsed.maindeck} / {decklist.parsed.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {decklist.parsed.sideboard}</td>
+                {decklist.parsed.maindeck} / {decklist.parsed.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {decklist.parsed.sideboard} / {decklist.parsed.unvalidated}
+              </td>
             </tr>
           )) : <tr>
               <td colSpan={4}><p className='text-lg text-center'>You have no registered decks yet.</p></td>

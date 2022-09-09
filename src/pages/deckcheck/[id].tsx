@@ -51,7 +51,7 @@ export default function ShowDecklist() {
                 {type === 'Other' ? <abbr title="Not recognized cards, not a problem">Other</abbr> : type}
               </h3>
               <ul>
-                {parsedDecklist.cards.filter(c => c.type === type).map((card, i) => (<li key={i}>{card.amount}x {card.name}</li>))}
+                {parsedDecklist.cards.filter(c => c.type === type).map((card, i) => (<li key={i} className={card.validated ? '' : 'text-red-400'}>{card.amount}x {card.name}</li>))}
               </ul>
             </div>
           })}

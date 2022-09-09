@@ -13,6 +13,7 @@ type DecklistParsed = {
   cards: DecklistCard[];
   maindeck: number;
   sideboard: number;
+  unvalidated: number;
 }
 
 
@@ -78,6 +79,7 @@ export function parseList(input:string):DecklistParsed {
     cards,
     maindeck: cards.filter(c => c.type !== 'Sideboard').reduce((a, c) => a + c.amount, 0),
     sideboard: cards.filter(c => c.type === 'Sideboard').reduce((a, c) => a + c.amount, 0),
+    unvalidated: cards.filter(c => c.validated === false).length
   }
 }
 
