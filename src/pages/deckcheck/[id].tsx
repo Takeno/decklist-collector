@@ -30,11 +30,8 @@ export default function ShowDecklist() {
       sideboard.map(c => `${c.amount} ${c.name}`).join('\n')
     }`;
 
-    const blob = new Blob([text], { type: "text/plain" });
 
-    await navigator.clipboard.write(
-      [new ClipboardItem({ ["text/plain"]: blob })]
-    );
+    await navigator.clipboard.writeText(text);
 
     alert('copied!')
 
