@@ -1,11 +1,10 @@
 import { useRouter } from "next/router";
-import { useForm, SubmitHandler } from "react-hook-form";
 import useSWR from "swr";
 import { fetchList, updateDecklist } from "../../utils/supabase";
-import DecklistForm from "../../components/DecklistForm";
 import { PageTitle } from "../../components/Typography";
 import { parseList } from "../../utils/decklist";
 import Link from "next/link";
+import { useCallback } from "react";
 
 export default function ShowDecklist() {
   const router = useRouter();
@@ -13,6 +12,33 @@ export default function ShowDecklist() {
   const decklistId = router.query.id as string;
 
   const { data, isValidating } = useSWR('/decklists/' + decklistId, () => fetchList(decklistId));
+
+
+  const copy = useCallback(async () => {
+    if(!data) {
+      return;
+    }
+
+    const parsedDecklist = parseList(data.decklist);
+
+    const mainboard = parsedDecklist.cards.filter(c => c.type !== 'Sideboard');
+    const sideboard = parsedDecklist.cards.filter(c => c.type === 'Sideboard');
+
+    const text = `${
+      mainboard.map(c => `${c.amount} ${c.name}`).join('\n')
+    }\n\n${
+      sideboard.map(c => `${c.amount} ${c.name}`).join('\n')
+    }`;
+
+    const blob = new Blob([text], { type: "text/plain" });
+
+    await navigator.clipboard.write(
+      [new ClipboardItem({ ["text/plain"]: blob })]
+    );
+
+    alert('copied!')
+
+  }, [data]);
 
   if (!data) {
     return <h1>Loading</h1>
@@ -24,7 +50,8 @@ export default function ShowDecklist() {
     <div className="container mx-auto mt-6 px-4">
       <Link href="/deckcheck"><a>Back to the list</a></Link>
       <PageTitle>{data.player} {parsedDecklist.maindeck < 60 && <span title="Minimum 60 cards">⚠️</span>}
-          {parsedDecklist.maindeck} / {parsedDecklist.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {parsedDecklist.sideboard}</PageTitle>
+          {parsedDecklist.maindeck} / {parsedDecklist.sideboard > 15 && <span title="Maximum 15 cards">⚠️</span>} {parsedDecklist.sideboard} <a href="#" className="text-lg" onClick={copy}>Copy</a>
+      </PageTitle>
 
         <p><span className="font-bold">Archetype:</span> {data.deck_archetype}</p>
         <p><span className="font-bold">Deck Name:</span> {data.deck_name}</p>

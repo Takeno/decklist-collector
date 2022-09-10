@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import Link from 'next/link'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import useSWR from 'swr'
 import { useLocalStorage } from 'usehooks-ts'
 import { PageTitle } from '../../components/Typography'
@@ -22,6 +22,26 @@ const Home: NextPage = () => {
       parsed: parseList(d.decklist)
     }))
   }, [data, nameFilter]);
+
+  const csv = useCallback(() => {
+    console.log(data);
+    if(!data) {
+      return;
+    }
+
+    const content = 'NAME; DCI\n' + data.map((dc, i) => `${dc.player};${i}`).join('\n');
+
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+    element.setAttribute('download', `players ${tournament}.csv`);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+  }, [data, tournament]);
 
   return (
     <div className="container mx-auto px-4 mt-6">
@@ -50,7 +70,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-      <h1>{parsedDecklists.length} lists found</h1>
+      <h1>{parsedDecklists.length} lists found - <span onClick={csv}>download csv</span></h1>
 
       <table className="table-auto w-full">
         <thead>
