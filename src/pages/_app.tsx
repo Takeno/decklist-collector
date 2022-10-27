@@ -1,30 +1,51 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import Login from './login';
-import LoginDC from './deckcheck/login';
-import { useSupabaseUser } from '../utils/supabase';
+import '../styles/globals.css';
+import type {AppProps} from 'next/app';
 import Header from '../components/Layout/Header';
 import Footer from '../components/Layout/Footer';
+import {UserProvider, useUser} from '../contexts/UserContext';
+import {PropsWithChildren, useEffect} from 'react';
+import {useRouter} from 'next/router';
 
-function MyApp({ Component, pageProps, router }: AppProps) {
-  const user = useSupabaseUser();
-
-  if(user === null) {
-    return <main className="min-h-screen flex flex-col">
-      <Header />
-      <div className='flex flex-1'>{router.asPath.includes('deckcheck') ? <LoginDC /> : <Login />}</div>
-      <Footer />
-    </main>
-  }
-
-  return <main className="min-h-screen flex flex-col">
-    <Header />
-    <div className='flex-1'>
-      <Component {...pageProps} />
-    </div>
-    <Footer />
-
-</main>
+export default function MyApp({Component, pageProps, router}: AppProps) {
+  return (
+    <UserProvider>
+      <PrivateChecker priv={router.asPath.includes('login') === false}>
+        <main className="min-h-screen flex flex-col">
+          <Header />
+          <div className="flexe flex-1">
+            <Component {...pageProps} />
+          </div>
+          <Footer />
+        </main>
+      </PrivateChecker>
+    </UserProvider>
+  );
 }
 
-export default MyApp
+const PrivateChecker = ({
+  priv,
+  children,
+}: PropsWithChildren<{priv: boolean}>) => {
+  const {user, loading} = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (loading) {
+      return;
+    }
+
+    if (priv && user === null) {
+      router.replace('/login');
+    }
+  }, [priv, loading, user, router]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (priv && user === null) {
+    return <div>Missing authentication</div>;
+  }
+
+  return <div>{children}</div>;
+};

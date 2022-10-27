@@ -1,31 +1,38 @@
 import availableCards from './legacy-cards.json';
 
-type CardType = 'Land' | 'Instant' | 'Sorcery' | 'Artifact' | 'Enchantment' | 'Creature' | 'Planeswalker' | 'Other' | 'Sideboard';
+type CardType =
+  | 'Land'
+  | 'Instant'
+  | 'Sorcery'
+  | 'Artifact'
+  | 'Enchantment'
+  | 'Creature'
+  | 'Planeswalker'
+  | 'Other'
+  | 'Sideboard';
 
 type DecklistCard = {
   amount: number;
   name: string;
-  type: CardType
+  type: CardType;
   validated: boolean;
-}
+};
 
 type DecklistParsed = {
   cards: DecklistCard[];
   maindeck: number;
   sideboard: number;
   unvalidated: number;
-}
+};
 
+export function parseList(input: string): DecklistParsed {
+  const [maindeck, sideboard] = splitMainSideboard(input);
 
-export function parseList(input:string):DecklistParsed {
+  let cards: DecklistCard[] = [];
 
-  const [maindeck, sideboard] = splitMainSideboard(input)
-
-  let cards:DecklistCard[] = [];
-
-  for(let line of maindeck.split('\n')) {
+  for (let line of maindeck.split('\n')) {
     const parsedLine = splitCardLine(line);
-    if(parsedLine === null) {
+    if (parsedLine === null) {
       continue;
     }
 
@@ -33,13 +40,22 @@ export function parseList(input:string):DecklistParsed {
 
     const validated = name.toLowerCase() in availableCards;
 
-    let type:CardType = 'Other';
+    let type: CardType = 'Other';
 
-    if(validated) {
-      const types = availableCards[name.toLowerCase() as keyof typeof availableCards];
+    if (validated) {
+      const types =
+        availableCards[name.toLowerCase() as keyof typeof availableCards];
 
-      for(let myType of ['Land' , 'Artifact' , 'Enchantment' , 'Creature' , 'Planeswalker', 'Instant', 'Sorcery'] as CardType[]) {
-        if(types.includes(myType)) {
+      for (let myType of [
+        'Land',
+        'Artifact',
+        'Enchantment',
+        'Creature',
+        'Planeswalker',
+        'Instant',
+        'Sorcery',
+      ] as CardType[]) {
+        if (types.includes(myType)) {
           type = myType;
           break;
         }
@@ -54,40 +70,42 @@ export function parseList(input:string):DecklistParsed {
     });
   }
 
+  if (typeof sideboard === 'string') {
+    for (let line of sideboard.split('\n')) {
+      const parsedLine = splitCardLine(line);
+      if (parsedLine === null) {
+        continue;
+      }
 
-  if(typeof sideboard === 'string')
-  for(let line of sideboard.split('\n')) {
-    const parsedLine = splitCardLine(line);
-    if(parsedLine === null) {
-      continue;
+      const [amount, name] = parsedLine;
+
+      const validated = name.toLowerCase() in availableCards;
+
+      cards.push({
+        amount: amount,
+        name: name,
+        type: 'Sideboard',
+        validated,
+      });
     }
-
-    const [amount, name] = parsedLine;
-
-    const validated = name.toLowerCase() in availableCards;
-
-    cards.push({
-      amount: amount,
-      name: name,
-      type: 'Sideboard',
-      validated,
-    });
   }
-
 
   return {
     cards,
-    maindeck: cards.filter(c => c.type !== 'Sideboard').reduce((a, c) => a + c.amount, 0),
-    sideboard: cards.filter(c => c.type === 'Sideboard').reduce((a, c) => a + c.amount, 0),
-    unvalidated: cards.filter(c => c.validated === false).length
-  }
+    maindeck: cards
+      .filter((c) => c.type !== 'Sideboard')
+      .reduce((a, c) => a + c.amount, 0),
+    sideboard: cards
+      .filter((c) => c.type === 'Sideboard')
+      .reduce((a, c) => a + c.amount, 0),
+    unvalidated: cards.filter((c) => c.validated === false).length,
+  };
 }
 
+const SIDEBOARD_REGEX = /^(?:[^0-9])*side(?:board)*:?/im;
 
-const SIDEBOARD_REGEX = /^(?:[^0-9])*side(?:board)*:?/mi
-
-function splitMainSideboard(input:string): [string, string?] {
-  if(SIDEBOARD_REGEX.test(input)) {
+function splitMainSideboard(input: string): [string, string?] {
+  if (SIDEBOARD_REGEX.test(input)) {
     const [maindeck, sideboard] = input.trim().split(SIDEBOARD_REGEX);
     return [maindeck, sideboard];
   }
@@ -96,13 +114,13 @@ function splitMainSideboard(input:string): [string, string?] {
   return [maindeck, sideboard];
 }
 
-function splitCardLine(input:string): [number, string] | null {
+function splitCardLine(input: string): [number, string] | null {
   const matches = input.trim().match(/^x? *([0-9]+) *x? *([^(]+)/i);
-  if(matches === null) {
+  if (matches === null) {
     return null;
   }
 
   const [, amount, name] = matches;
 
-  return [parseInt(amount), name.trim()]
+  return [parseInt(amount), name.trim()];
 }

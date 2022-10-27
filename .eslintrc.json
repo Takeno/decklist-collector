@@ -1,3 +1,7 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["@improntaadvance", "next/core-web-vitals"],
+  "rules": {
+    "react/prop-types": 0,
+    "camelcase": 0
+  }
 }

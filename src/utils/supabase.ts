@@ -1,121 +1,128 @@
-import { createClient } from '@supabase/supabase-js'
-import { useEffect, useState } from 'react'
+import {createClient} from '@supabase/supabase-js';
+import {useEffect, useState} from 'react';
 
-const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6a2JzcGxoZHBmcWR0ZGJnaWlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk1NDQ1MTgsImV4cCI6MTk3NTEyMDUxOH0.uZVn_g8HZufxsCGWO_YFUlgor0tm3JKZwsxaabEJBj0'
+const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
+const supabaseAnonKey =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6a2JzcGxoZHBmcWR0ZGJnaWlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk1NDQ1MTgsImV4cCI6MTk3NTEyMDUxOH0.uZVn_g8HZufxsCGWO_YFUlgor0tm3JKZwsxaabEJBj0';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export async function fetchMyLists(): Promise<Decklist[]> {
+  const {data, error} = await supabase.from('decklists').select();
 
-export async function signUp(email: string) {
-  await supabase.auth.signIn({ email })
+  if (error) {
+    throw error;
+  }
+
+  return data;
 }
 
+export async function fetchTournaments(): Promise<Tournament[]> {
+  const {data, error} = await supabase
+    .from('tournaments')
+    .select()
+    .order('start_date');
 
-export function getCurrentUser(): User|null {
-  const user = supabase.auth.user();
-  if(user === null) {
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function fetchMyTournaments(
+  userId: string
+): Promise<TournamentPlayer[]> {
+  const {data, error} = await supabase
+    .from('players')
+    .select()
+    .eq('user_id', userId);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function fetchTournament(
+  tournamentId: string
+): Promise<Tournament | null> {
+  const {data, error} = await supabase
+    .from('tournaments')
+    .select()
+    .eq('id', tournamentId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function fetchAllPlayersByTournament(
+  tId: string
+): Promise<TournamentPlayer[]> {
+  const {data, error} = await supabase
+    .from('players')
+    .select()
+    .eq('tournament_id', tId)
+    .order('last_name');
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+
+export async function fetchPlayerTournament(
+  userId: string,
+  tournamentId: string
+): Promise<TournamentPlayer | null> {
+  const {data, error} = await supabase
+    .from('players')
+    .select()
+    .eq('tournament_id', tournamentId)
+    .eq('user_id', userId);
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.length === 0) {
     return null;
   }
-
-  return {
-    id: user.id,
-    email: user.email!
-  }
-}
-
-export function getCurrentRequiredUser() : User {
-  const user = getCurrentUser();
-  if(user === null) throw new Error('User is null');
-
-  return user;
-}
-
-export async function logout():Promise<void> {
-  const { error } = await supabase.auth.signOut();
-
-  if(error)
-    throw error;
-}
-
-export function useSupabaseUser() {
-  const [user, setUser] = useState<User|null>(null);
-
-  useEffect(() => {
-    const {data: authListener} = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN') {
-        setUser(getCurrentUser());
-      }
-
-      if (event === 'SIGNED_OUT') {
-        setUser(null)
-      }
-    });
-
-    setUser(getCurrentUser());
-
-    return () => {
-      authListener?.unsubscribe()
-    };
-  }, []);
-
-  return user;
-}
-
-
-export async function fetchMyLists():Promise<Decklist[]> {
-  const {data, error} = await supabase
-    .from('decklists')
-    .select();
-
-  if(error) throw error;
-
-  return data;
-}
-
-export async function fetchListByTournament(t:string):Promise<Decklist[]> {
-  const {data, error} = await supabase
-    .from<Decklist>('decklists')
-    .select()
-    .eq('tournament', t)
-    .order('created_at', {ascending: true});
-
-  if(error) throw error;
-
-  return data;
-}
-
-export async function fetchList(id:string):Promise<Decklist|undefined> {
-  const {data, error} = await supabase
-    .from('decklists')
-    .select()
-    .eq('id', id)
-
-  if(error) throw error;
 
   return data[0];
 }
 
-export async function createNewDecklist(decklist:DecklistForm) {
-  const {data, error} = await supabase
-    .from('decklists')
-    .insert({
-      created_by: getCurrentRequiredUser().id,
-      ...decklist
-    }, { returning: 'minimal' });
+export async function createPlayerTournament(
+  body: Omit<TournamentPlayer, 'id'>
+): Promise<TournamentPlayer> {
+  const {data, error} = await supabase.from('players').insert(body).select();
 
-  if(error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  return data;
+  return data[0];
 }
+export async function updatePlayerTournament(
+  body: Partial<TournamentPlayer>
+): Promise<TournamentPlayer> {
+  const {id, ...player} = body;
 
-export async function updateDecklist(id:string, decklist:DecklistForm) {
-  const { data, error } = await supabase
-    .from('decklists')
-    .update(decklist)
-    .match({ id });
+  const {data, error} = await supabase
+    .from('players')
+    .update(player)
+    .match({id: id})
+    .select();
 
-  if(error) throw error;
+  if (error) {
+    throw error;
+  }
 
-  return data;
+  return data[0];
 }

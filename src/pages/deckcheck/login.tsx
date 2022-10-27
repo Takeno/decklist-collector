@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { supabase } from "../../utils/supabase";
+import React, {useState, useEffect} from 'react';
+import {supabase} from '../../utils/supabase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { user, error } = await supabase.auth.signIn({
-      email,
-      password,
-    })
+    // const {user, error} = await supabase.auth.signIn({
+    //   email,
+    //   password,
+    // });
   };
 
   return (
@@ -29,16 +29,18 @@ export default function Login() {
         </div>
         <div>
           <label className="block font-bold text-lg">Password:</label>
-        <input
-          type="password"
-          required
-          value={password}
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
+          <input
+            type="password"
+            required
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
 
-        <button className="button" type="submit">Submit</button>
+        <button className="button" type="submit">
+          Submit
+        </button>
       </form>
     </div>
   );

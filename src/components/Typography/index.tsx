@@ -15,7 +15,7 @@ export const PageTitle = ({
 }: PropsWithChildren<PageTitleProps>) => {
   return (
     <Type
-      className={`tracking-tight font-extrabold text-4xl my-10 ${
+      className={`tracking-tight font-extrabold text-3xl my-4 ${
         className ? className : ''
       }`}
     >

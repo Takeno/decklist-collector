@@ -8,17 +8,28 @@ import {formatDate} from '../../utils/dates';
 import {
   fetchAllPlayersByTournament,
   fetchTournaments,
+  updatePlayerTournament,
 } from '../../utils/supabase';
 
 export default function Admin() {
   useRequiredAdmin();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
   const [nameFilter, setNameFilter] = useState('');
-  const {data: players} = useSWR('/dc/' + tournament, () =>
-    fetchAllPlayersByTournament(tournament)
+  const {data: players, mutate} = useSWR(
+    '/player-by-tournament/' + tournament,
+    () => fetchAllPlayersByTournament(tournament)
   );
 
   const {data: tournaments} = useSWR('/tournaments', () => fetchTournaments());
+
+  const markAsPaid = async (id: number) => {
+    await updatePlayerTournament({
+      id: id,
+      status: 'paid',
+    });
+
+    mutate();
+  };
 
   const filtered = useMemo(() => {
     if (players === undefined) {
@@ -38,7 +49,7 @@ export default function Admin() {
 
   return (
     <div className="container mx-auto px-4 mt-6">
-      <PageTitle>Deck Check Panel</PageTitle>
+      <PageTitle>Admin panel</PageTitle>
 
       <div className="flex flex-col mb-8 md:flex-row md:justify-between">
         <div className="md:flex-1 pr-4">
@@ -96,8 +107,14 @@ export default function Admin() {
                 {player.status === 'decklist-submitted' &&
                   player.deck_archetype}
               </td>
-
-              <td></td>
+              <td>{player.status}</td>
+              <td>
+                {player.status === 'payment-pending' && (
+                  <button onClick={() => markAsPaid(player.id)}>
+                    Mark as paid
+                  </button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

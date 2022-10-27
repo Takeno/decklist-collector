@@ -1,7 +1,6 @@
-import { parseList } from "./decklist"
+import {parseList} from './decklist';
 
 describe('Decklist parser', () => {
-
   it('should return empty cards if nothing is provided', () => {
     const parsed = parseList('');
     expect(parsed.cards).toHaveLength(0);
@@ -9,13 +8,12 @@ describe('Decklist parser', () => {
 
   it('should return correct decklist #1', () => {
     const parsed = parseList(
-`3x Lightning Bolt
+      `3x Lightning Bolt
 3 Rift Bolt
 x4 Goblin Guide
 
  4X Deflecting Palm`
     );
-
 
     expect(parsed.cards).toHaveLength(4);
 
@@ -39,7 +37,7 @@ x4 Goblin Guide
       type: 'Sideboard',
       validated: true,
     });
-  })
+  });
 
   it('should return correct decklist #2', () => {
     const parsed = parseList(`//Main
@@ -72,7 +70,6 @@ x4 Goblin Guide
     1 Smash to Smithereens
     3 Surgical Extraction`);
 
-
     expect(parsed.cards).toHaveLength(26);
 
     expect(parsed.cards).toContainEqual({
@@ -88,7 +85,7 @@ x4 Goblin Guide
       type: 'Land',
       validated: true,
     });
-  })
+  });
 
   it('should return correct decklist ARENA style #3', () => {
     const parsed = parseList(`1 Aether Spellbomb (JMP) 456
@@ -128,7 +125,6 @@ x4 Goblin Guide
     2 Spell Pierce (NEO) 80
     1 Void Mirror (MH2) 242`);
 
-
     expect(parsed.cards).toHaveLength(34);
 
     expect(parsed.cards).toContainEqual({
@@ -151,7 +147,7 @@ x4 Goblin Guide
       type: 'Sideboard',
       validated: true,
     });
-  })
+  });
 
   it('should return correct decklist NOT ENGLISH #4', () => {
     const parsed = parseList(`4x Miniera di diamanti
@@ -166,7 +162,6 @@ x4 Goblin Guide
     2x Rubapensieri
     1x Verità riecheggiante
     3x Veil of summer`);
-
 
     expect(parsed.cards).toHaveLength(11);
 
@@ -197,7 +192,7 @@ x4 Goblin Guide
       type: 'Sideboard',
       validated: true,
     });
-  })
+  });
 
   it('should return correct decklist SOME NUMBERS #5', () => {
     const parsed = parseList(`Old School Swedish Deck:
@@ -252,10 +247,9 @@ x4 Goblin Guide
     1 Blue Elemental Blast
 `);
 
-
     expect(parsed.maindeck).toEqual(60);
     expect(parsed.sideboard).toEqual(15);
-  })
+  });
 
   it('should return correct decklist Ragavan #6', () => {
     const parsed = parseList(`2 Archmage's Charm
@@ -263,10 +257,8 @@ x4 Goblin Guide
     4 Consider
     4 Counterspell`);
 
-
     expect(parsed.maindeck).toEqual(14);
     expect(parsed.sideboard).toEqual(0);
-
 
     expect(parsed.cards).toContainEqual({
       amount: 4,
@@ -274,9 +266,8 @@ x4 Goblin Guide
       type: 'Creature',
       validated: true,
     });
-
-  })
-})
+  });
+});
 
 describe('Split Maindeck and Sideboard', () => {
   it('#1 with double break', () => {
@@ -287,8 +278,10 @@ describe('Split Maindeck and Sideboard', () => {
     2 Cemetery Gatekeeper
     2 Pyroblast`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(2)
-  })
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      2
+    );
+  });
 
   it('#2 with SIDEBOARD text', () => {
     const decklist = parseList(`3 Arid Mesa
@@ -298,17 +291,20 @@ describe('Split Maindeck and Sideboard', () => {
     2 Cemetery Gatekeeper
     2 Pyroblast`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(2)
-  })
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      2
+    );
+  });
 
   it('#3 without SIDEBOARD', () => {
     const decklist = parseList(`3 Arid Mesa
     1 Barbarian Ring
     4 Bloodstained Mire`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(0)
-  })
-
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      0
+    );
+  });
 
   it('#4 with SIDEBOARD text from real list', () => {
     const decklist = parseList(`18 LANDS
@@ -349,9 +345,10 @@ describe('Split Maindeck and Sideboard', () => {
     2 Surgical Extraction
     1 Unholy Heat`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(10)
-  })
-
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      10
+    );
+  });
 
   it('#5 with SIDE text', () => {
     const decklist = parseList(`1 Aether Spellbomb
@@ -362,8 +359,10 @@ describe('Split Maindeck and Sideboard', () => {
     3 Dismember
     1 Faerie Macabre`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(3)
-  })
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      3
+    );
+  });
 
   it('#6 exported Arena style', () => {
     const decklist = parseList(`1 Aether Spellbomb (JMP) 456
@@ -376,8 +375,10 @@ describe('Split Maindeck and Sideboard', () => {
     1 Damping Sphere (DOM) 213
     2 Dispatch (NEC) 83`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(3)
-  })
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      3
+    );
+  });
 
   it('#7 with Consider', () => {
     const decklist = parseList(`2 Archmage's Charm
@@ -385,6 +386,8 @@ describe('Split Maindeck and Sideboard', () => {
     4 Consider
     4 Counterspell`);
 
-    expect(decklist.cards.filter(c => c.type === 'Sideboard')).toHaveLength(0)
-  })
+    expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
+      0
+    );
+  });
 });
