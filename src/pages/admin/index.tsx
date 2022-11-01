@@ -20,15 +20,33 @@ export default function Admin() {
     () => fetchAllPlayersByTournament(tournament)
   );
 
+  console.log(players);
+
   const {data: tournaments} = useSWR('/tournaments', () => fetchTournaments());
 
   const markAsPaid = async (id: number) => {
-    await updatePlayerTournament({
-      id: id,
-      status: 'paid',
-    });
+    try {
+      const p = players?.find((p) => p.id === id);
+      if (p === undefined) {
+        throw new Error('player not found');
+      }
+      // const t = tournaments?.find(t => t.id === p.tournament_id);
+      // if(t === undefined) throw new Error('tournament not found');
 
-    mutate();
+      await updatePlayerTournament({
+        id: id,
+        status: 'paid',
+      });
+
+      await fetch(
+        `/api/mark-paid?tournament=${p.tournament_id}&email=${p.email}`
+      );
+
+      mutate();
+    } catch (e: any) {
+      alert(e.message);
+      console.error(e);
+    }
   };
 
   const filtered = useMemo(() => {

@@ -99,7 +99,7 @@ export default function Login() {
                         {formatDate(t.start_date)}
                       </dd>
                       <dt className="sr-only sm:hidden">Format</dt>
-                      <dd className="mt-1 truncate text-gray-500 sm:hidden">
+                      <dd className="mt-1 truncate text-gray-500 sm:hidden first-letter:uppercase">
                         {t.format}
                       </dd>
                     </dl>
@@ -107,7 +107,7 @@ export default function Login() {
                   <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
                     {formatDate(t.start_date)}
                   </td>
-                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell">
+                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell first-letter:uppercase">
                     {t.format}
                   </td>
                 </tr>

@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {SubmitHandler, useForm} from 'react-hook-form';
 import {mutate} from 'swr';
 import {useRequiredUser} from '../contexts/UserContext';
@@ -28,6 +29,7 @@ export default function TournamentRegistration({tournament}: Props) {
     try {
       await createPlayerTournament({
         ...data,
+        email: user.email,
         status: 'payment-pending',
         user_id: user.id,
         tournament_id: tournament.id,
@@ -46,13 +48,13 @@ export default function TournamentRegistration({tournament}: Props) {
 
   return (
     <div className="container mx-auto mt-6 px-4">
+      <Link href="/">
+        <a>Back to the list</a>
+      </Link>
       <TournamentStatus tournament={tournament} />
 
       <PageTitle>Registration for {tournament.name}</PageTitle>
-      <p>
-        Welcome to 4Season Autumn! Per iscriverti al torneo, per prima cosa
-        dicci chi sei.
-      </p>
+      <p>First of all, insert your first name and last name.</p>
 
       <p className="">
         <span className="italic">Caution:</span> Accounts are individual, so you
@@ -96,6 +98,7 @@ export default function TournamentRegistration({tournament}: Props) {
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Email:</label>
             <input type="text" className="w-full" disabled value={user.email} />
+            <p className="text-sm italic">This field is not editable.</p>
           </div>
         </div>
         {isSubmitSuccessful && (

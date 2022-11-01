@@ -11,6 +11,21 @@ type Props = {
 };
 
 export default function TournamentDecklist({tournament, player}: Props) {
+  if (tournament.decklist_required === false) {
+    return (
+      <div className="container mx-auto mt-6 px-4">
+        <Link href="/">
+          <a>Back to the list</a>
+        </Link>
+        <PageTitle>Your registration is complete!</PageTitle>
+
+        <p>
+          The decklist is not required for this tournament. See you on Bologna!
+        </p>
+      </div>
+    );
+  }
+
   const onSubmit: SubmitHandler<DecklistFormType> = async (data) => {
     await updatePlayerTournament({
       ...player,

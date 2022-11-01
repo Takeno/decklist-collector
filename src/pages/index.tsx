@@ -82,7 +82,7 @@ const Home: NextPage = () => {
                         {formatDate(t.start_date)}
                       </dd>
                       <dt className="sr-only sm:hidden">Format</dt>
-                      <dd className="mt-1 truncate text-gray-500 sm:hidden">
+                      <dd className="mt-1 truncate text-gray-500 sm:hidden first-letter:uppercase">
                         {t.format}
                       </dd>
                     </dl>

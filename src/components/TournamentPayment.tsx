@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {PageTitle} from './Typography';
 
 type Props = {
@@ -9,6 +10,9 @@ export default function TournamentPayment({tournament, player}: Props) {
   if (tournament.price === 0) {
     return (
       <div className="container mx-auto mt-6 px-4 space-y-4">
+        <Link href="/">
+          <a>Back to the list</a>
+        </Link>
         <PageTitle>
           {player.first_name}, thanks for your registration!
         </PageTitle>
@@ -24,6 +28,9 @@ export default function TournamentPayment({tournament, player}: Props) {
 
   return (
     <div className="container mx-auto mt-6 px-4 space-y-4">
+      <Link href="/">
+        <a>Back to the list</a>
+      </Link>
       <PageTitle>{player.first_name}, thanks for your registration!</PageTitle>
 
       <p>
