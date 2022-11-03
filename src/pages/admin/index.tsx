@@ -44,7 +44,7 @@ export default function Admin() {
 
       mutate();
     } catch (e: any) {
-      alert(e.message);
+      alert(e);
       console.error(e);
     }
   };
