@@ -5,20 +5,30 @@ import Footer from '../components/Layout/Footer';
 import {UserProvider, useUser} from '../contexts/UserContext';
 import {PropsWithChildren, useEffect} from 'react';
 import {useRouter} from 'next/router';
+import Head from 'next/head';
 
 export default function MyApp({Component, pageProps, router}: AppProps) {
   return (
-    <UserProvider>
-      <PrivateChecker priv={router.asPath.includes('login') === false}>
-        <main className="min-h-screen flex flex-col">
-          <Header />
-          <div className="flexe flex-1">
-            <Component {...pageProps} />
-          </div>
-          <Footer />
-        </main>
-      </PrivateChecker>
-    </UserProvider>
+    <>
+      <Head>
+        <title>Welcome to 4Seasons Autumn!</title>
+        <meta
+          name="description"
+          content="Register, pay and upload your decklist fully online"
+        />
+      </Head>
+      <UserProvider>
+        <PrivateChecker priv={router.asPath.includes('login') === false}>
+          <main className="min-h-screen flex flex-col">
+            <Header />
+            <div className="flexe flex-1">
+              <Component {...pageProps} />
+            </div>
+            <Footer />
+          </main>
+        </PrivateChecker>
+      </UserProvider>
+    </>
   );
 }
 
