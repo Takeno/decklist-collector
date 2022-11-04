@@ -103,7 +103,7 @@ export default function Admin() {
         <thead>
           <tr className="border-b font-bold">
             <td>Player</td>
-            <td className="hidden md:block">Archetype</td>
+            <td className="hidden md:block">Torneo</td>
             <td>Status</td>
             <td></td>
           </tr>
@@ -115,16 +115,10 @@ export default function Admin() {
               className={i % 2 === 0 ? undefined : 'bg-gray-50'}
             >
               <td>
-                <Link href={`/deckcheck/${player.id}`}>
-                  <a className="hover:underline">
-                    {player.last_name} {player.first_name}
-                  </a>
-                </Link>
+                {player.last_name} {player.first_name}
+                <span className="md:hidden">{player.tournaments.name}</span>
               </td>
-              <td className="hidden md:block">
-                {player.status === 'decklist-submitted' &&
-                  player.deck_archetype}
-              </td>
+              <td className="hidden md:block">{player.tournaments.name}</td>
               <td>{player.status}</td>
               <td>
                 {player.status === 'payment-pending' && (

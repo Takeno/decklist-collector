@@ -62,13 +62,18 @@ export async function fetchTournament(
 }
 
 export async function fetchAllPlayersByTournament(
-  tId: string
-): Promise<TournamentPlayer[]> {
-  const {data, error} = await supabase
+  tId?: string
+): Promise<Array<TournamentPlayer & {tournaments: {name: string}}>> {
+  let ops = supabase
     .from('players')
-    .select()
-    .eq('tournament_id', tId)
+    .select('*, tournaments(name)')
     .order('last_name');
+
+  if (tId) {
+    ops = ops.eq('tournament_id', tId);
+  }
+
+  const {data, error} = await ops;
 
   if (error) {
     throw error;
