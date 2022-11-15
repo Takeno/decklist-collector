@@ -20,8 +20,6 @@ export default function Admin() {
     () => fetchAllPlayersByTournament(tournament)
   );
 
-  console.log(players);
-
   const {data: tournaments} = useSWR('/tournaments', () => fetchTournaments());
 
   const markAsPaid = async (id: number) => {
@@ -62,7 +60,11 @@ export default function Admin() {
       )
       .map((d) => ({
         ...d,
-      }));
+        fullname: `${d.last_name} ${d.first_name}`,
+      }))
+      .sort((a, b) =>
+        a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase())
+      );
   }, [players, nameFilter]);
 
   return (
@@ -115,7 +117,7 @@ export default function Admin() {
               className={i % 2 === 0 ? undefined : 'bg-gray-50'}
             >
               <td>
-                {player.last_name} {player.first_name}
+                {player.fullname}
                 <span className="md:hidden">{player.tournaments.name}</span>
               </td>
               <td className="hidden md:block">{player.tournaments.name}</td>
