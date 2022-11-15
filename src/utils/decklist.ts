@@ -1,6 +1,6 @@
-import availableCards from './legacy-cards.json';
+import availableCards from './all-cards.json';
 
-type CardType =
+export type CardType =
   | 'Land'
   | 'Instant'
   | 'Sorcery'
@@ -40,27 +40,7 @@ export function parseList(input: string): DecklistParsed {
 
     const validated = name.toLowerCase() in availableCards;
 
-    let type: CardType = 'Other';
-
-    if (validated) {
-      const types =
-        availableCards[name.toLowerCase() as keyof typeof availableCards];
-
-      for (let myType of [
-        'Land',
-        'Artifact',
-        'Enchantment',
-        'Creature',
-        'Planeswalker',
-        'Instant',
-        'Sorcery',
-      ] as CardType[]) {
-        if (types.includes(myType)) {
-          type = myType;
-          break;
-        }
-      }
-    }
+    const type = extractType(name);
 
     cards.push({
       amount: amount,
@@ -100,6 +80,33 @@ export function parseList(input: string): DecklistParsed {
       .reduce((a, c) => a + c.amount, 0),
     unvalidated: cards.filter((c) => c.validated === false).length,
   };
+}
+
+export function extractType(card: string): CardType {
+  const validated = card.toLowerCase() in availableCards;
+
+  if (validated === false) {
+    return 'Other';
+  }
+
+  const types =
+    availableCards[card.toLowerCase() as keyof typeof availableCards];
+
+  for (let myType of [
+    'Land',
+    'Artifact',
+    'Enchantment',
+    'Creature',
+    'Planeswalker',
+    'Instant',
+    'Sorcery',
+  ] as CardType[]) {
+    if (types.includes(myType)) {
+      return myType;
+    }
+  }
+
+  return 'Other';
 }
 
 const SIDEBOARD_REGEX = /^(?:[^0-9])*side(?:board)*:?/im;

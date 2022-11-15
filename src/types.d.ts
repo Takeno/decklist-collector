@@ -60,5 +60,7 @@ type TournamentPlayer =
 
 type DecklistFormType = Pick<
   TournamentPlayerDecklistSubmitted,
-  'deck_name' | 'deck_archetype' | 'decklist'
->;
+  'deck_name' | 'deck_archetype'
+> & {
+  decklist: string;
+};

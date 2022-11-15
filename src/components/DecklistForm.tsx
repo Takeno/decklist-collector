@@ -1,10 +1,18 @@
 import Link from 'next/link';
-import {useEffect} from 'react';
-import {useForm, SubmitHandler, useWatch} from 'react-hook-form';
+import {useCallback, useEffect, useRef} from 'react';
+import {
+  useForm,
+  SubmitHandler,
+  useWatch,
+  Controller,
+  useFieldArray,
+} from 'react-hook-form';
+import AsyncSelect from 'react-select/async';
 import {parseList} from '../utils/decklist';
 
 import LEGACY_DECKS from '../data/legacy-meta.json';
 import VINTAGE_DECKS from '../data/vintage-meta.json';
+import DecklistInput from './DecklistInput';
 
 type DecklistFormProps = {
   format: Format | string;
@@ -59,13 +67,6 @@ export default function DecklistForm({
     formState: {errors, isSubmitting, isSubmitSuccessful},
   } = useForm<DecklistFormType>();
 
-  const decklist = useWatch({
-    control,
-    name: 'decklist',
-  });
-
-  const parsedDecklist = parseList(decklist || '');
-
   useEffect(() => {
     if (initialValues) {
       reset(initialValues);
@@ -73,6 +74,24 @@ export default function DecklistForm({
   }, [reset, initialValues]);
 
   const internalOnSubmit: SubmitHandler<DecklistFormType> = async (data) => {
+    const parsed = parseList(data.decklist);
+
+    if (parsed.maindeck < 60) {
+      setError('decklist', {
+        type: 'custom',
+        message: 'The mainboard must have at least 60 cards',
+      });
+      throw new Error('Invalid form');
+    }
+
+    if (parsed.sideboard > 15) {
+      setError('decklist', {
+        type: 'custom',
+        message: 'The sideboard must have a maximum of 15 cards',
+      });
+      throw new Error('Invalid form');
+    }
+
     await onSubmit(data);
   };
 
@@ -111,74 +130,22 @@ export default function DecklistForm({
 
         <div className="flex flex-col md:flex-row md:justify-between">
           <div className="md:flex-1 pr-4">
-            <label className="block font-bold text-lg mt-6">Decklist:</label>
-            <div className="w-full">
-              <textarea
-                className="w-full min-h-[240px]"
-                {...register('decklist', {required: true})}
-                placeholder={
-                  '4 Goblin Guide\n4 Lava Spike\n\n2 Deflecting Palm'
-                }
-              />
-              {errors.decklist && (
-                <p className="text-red-700">This field is required</p>
+            <Controller
+              control={control}
+              name="decklist"
+              render={({field}) => (
+                <DecklistInput
+                  format={undefined}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
               )}
-            </div>
-          </div>
-          <div className="md:flex-1 pr-4">
-            <label className="block font-bold text-lg mt-6">
-              Parsed Decklist (
-              {parsedDecklist.maindeck < 60 && (
-                <span title="Minimum 60 cards">⚠️</span>
-              )}
-              {parsedDecklist.maindeck} /{' '}
-              {parsedDecklist.sideboard > 15 && (
-                <span title="Maximum 15 cards">⚠️</span>
-              )}{' '}
-              {parsedDecklist.sideboard})
-            </label>
-            <div className="columns-2">
-              {[
-                'Planeswalker',
-                'Creature',
-                'Instant',
-                'Sorcery',
-                'Artifact',
-                'Enchantment',
-                'Land',
-                'Other',
-                'Sideboard',
-              ].map((type) => {
-                if (
-                  parsedDecklist.cards.some((c) => c.type === type) === false
-                ) {
-                  return null;
-                }
-
-                return (
-                  <div key={type} className="break-inside-avoid-column">
-                    <h3 className="font-bold text-lg mt-2">
-                      {type === 'Other' ? (
-                        <abbr title="Not recognized cards, not a problem">
-                          Other
-                        </abbr>
-                      ) : (
-                        type
-                      )}
-                    </h3>
-                    <ul>
-                      {parsedDecklist.cards
-                        .filter((c) => c.type === type)
-                        .map((card, i) => (
-                          <li key={i}>
-                            {card.amount}x {card.name}
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                );
-              })}
-            </div>
+            />
+            {errors.decklist && (
+              <p className="text-red-700">
+                Decklist is invalid: {errors.decklist?.message}
+              </p>
+            )}
           </div>
         </div>
 
