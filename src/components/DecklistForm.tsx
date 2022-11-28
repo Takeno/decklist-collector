@@ -15,6 +15,7 @@ import VINTAGE_DECKS from '../data/vintage-meta.json';
 import DecklistInput from './DecklistInput';
 
 type DecklistFormProps = {
+  disabled?: boolean;
   format: Format | string;
   initialValues?: Partial<DecklistFormType>;
   onSubmit: SubmitHandler<DecklistFormType>;
@@ -54,6 +55,7 @@ const isValidFormat = (s: string): s is Format => {
 };
 
 export default function DecklistForm({
+  disabled,
   format,
   onSubmit,
   initialValues,
@@ -127,7 +129,6 @@ export default function DecklistForm({
             <input type="text" className="w-full" {...register('deck_name')} />
           </div>
         </div>
-
         <div className="flex flex-col md:flex-row md:justify-between">
           <div className="md:flex-1 pr-4">
             <Controller
@@ -148,14 +149,18 @@ export default function DecklistForm({
             )}
           </div>
         </div>
-
         {isSubmitSuccessful && (
           <p className="text-green-700 font-bold">Decklist saved!</p>
         )}
-
-        <button className="button" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving...' : 'Save'}
-        </button>
+        {disabled ? (
+          <h4 className="font-extrabold text-xl my-4 text-red-500">
+            Decklist editing is disabled.
+          </h4>
+        ) : (
+          <button className="button" disabled={isSubmitting}>
+            {isSubmitting ? 'Saving...' : 'Save'}
+          </button>
+        )}{' '}
       </form>
     </>
   );

@@ -131,3 +131,19 @@ export async function updatePlayerTournament(
 
   return data[0];
 }
+
+export async function fetchTournamentPlayer(
+  id: string
+): Promise<TournamentPlayer | null> {
+  const {data, error} = await supabase.from('players').select().eq('id', id);
+
+  if (error) {
+    throw error;
+  }
+
+  if (data.length === 0) {
+    return null;
+  }
+
+  return data[0];
+}

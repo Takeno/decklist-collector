@@ -46,6 +46,19 @@ export default function TournamentRegistration({tournament}: Props) {
     }
   };
 
+  if (tournament.blocked) {
+    return (
+      <div className="container mx-auto mt-6 px-4">
+        <Link href="/">
+          <a>Back to the list</a>
+        </Link>
+        <TournamentStatus tournament={tournament} />
+
+        <PageTitle>Registration for {tournament.name} are closed.</PageTitle>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto mt-6 px-4">
       <Link href="/">

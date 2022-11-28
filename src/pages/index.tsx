@@ -99,13 +99,15 @@ const Home: NextPage = () => {
                       : '-'}
                   </td>
                   <td className="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <Link href={`/t/${t.id}`}>
-                      <a className="text-indigo-600 hover:text-indigo-900">
-                        {myTournament?.status
-                          ? mapStatus2CTA[myTournament?.status]
-                          : 'Register now'}
-                      </a>
-                    </Link>
+                    {(t.blocked === false || myTournament !== undefined) && (
+                      <Link href={`/t/${t.id}`}>
+                        <a className="text-indigo-600 hover:text-indigo-900">
+                          {myTournament?.status
+                            ? mapStatus2CTA[myTournament?.status]
+                            : 'Register now'}
+                        </a>
+                      </Link>
+                    )}
                   </td>
                 </tr>
               );

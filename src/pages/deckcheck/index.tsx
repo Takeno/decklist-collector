@@ -3,18 +3,19 @@ import {useMemo, useState} from 'react';
 import useSWR from 'swr';
 import {useLocalStorage} from 'usehooks-ts';
 import {PageTitle} from '../../components/Typography';
-import {useRequiredAdmin} from '../../contexts/UserContext';
+import {useRequiredDeckcheck} from '../../contexts/UserContext';
 import {formatDate} from '../../utils/dates';
+import {parseList} from '../../utils/decklist';
 import {
   fetchAllPlayersByTournament,
   fetchTournaments,
 } from '../../utils/supabase';
 
 export default function Admin() {
-  useRequiredAdmin();
+  useRequiredDeckcheck();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
   const [nameFilter, setNameFilter] = useState('');
-  const {data: players} = useSWR('/dc/' + tournament, () =>
+  const {data: players} = useSWR(tournament && '/dc/' + tournament, () =>
     fetchAllPlayersByTournament(tournament)
   );
 
@@ -75,7 +76,7 @@ export default function Admin() {
           <tr className="border-b font-bold">
             <td>Player</td>
             <td className="hidden md:block">Archetype</td>
-            <td>Status</td>
+            <td>DC</td>
             <td></td>
           </tr>
         </thead>
@@ -96,8 +97,19 @@ export default function Admin() {
                 {player.status === 'decklist-submitted' &&
                   player.deck_archetype}
               </td>
+              <td>
+                {player.deckchecked && '✅'}
+                {player.notes && '📝'}
+              </td>
 
-              <td></td>
+              <td>
+                {player.status === 'decklist-submitted' &&
+                  ((): string => {
+                    const p = parseList(player.decklist);
+
+                    return `${p.maindeck}/${p.sideboard}`;
+                  })()}
+              </td>
             </tr>
           ))}
         </tbody>

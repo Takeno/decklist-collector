@@ -42,6 +42,16 @@ export const useRequiredAdmin = (): User => {
   return user;
 };
 
+export const useRequiredDeckcheck = (): User => {
+  const user = useRequiredUser();
+
+  if (user.admin === false && user.deckcheck === false) {
+    throw new Error('Admin required');
+  }
+
+  return user;
+};
+
 export const UserProvider = ({children}: PropsWithChildren<{}>) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
@@ -61,6 +71,7 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
         id: session.user.id,
         email: session.user.email!,
         admin: session.user.user_metadata.admin || false,
+        deckcheck: session.user.user_metadata.deckcheck || false,
       });
     });
   }, []);
@@ -83,6 +94,7 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
         id: session.user.id,
         email: session.user.email!,
         admin: session.user.user_metadata.admin || false,
+        deckcheck: session.user.user_metadata.deckcheck || false,
       });
     });
 

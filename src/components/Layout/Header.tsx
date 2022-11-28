@@ -38,6 +38,13 @@ export default function Header() {
                 </Link>
               </div>
             )}
+            {user?.deckcheck && (
+              <div className="" id="navbar-default">
+                <Link href="/deckcheck">
+                  <a className="block py-2 pr-4 pl-3 text-white">Deckcheck</a>
+                </Link>
+              </div>
+            )}
             {user && (
               <div className="" id="navbar-default">
                 <button

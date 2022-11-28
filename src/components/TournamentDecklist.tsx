@@ -48,6 +48,7 @@ export default function TournamentDecklist({tournament, player}: Props) {
       </p>
 
       <DecklistForm
+        disabled={tournament.blocked}
         format={tournament.format}
         onSubmit={onSubmit}
         initialValues={player.status === 'paid' ? undefined : player}

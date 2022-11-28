@@ -1,17 +1,21 @@
-import React, {useState, useEffect} from 'react';
+import {useRouter} from 'next/router';
+import React, {useState} from 'react';
 import {supabase} from '../../utils/supabase';
 
 export default function Login() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // const {user, error} = await supabase.auth.signIn({
-    //   email,
-    //   password,
-    // });
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    router.replace('/deckcheck');
   };
 
   return (

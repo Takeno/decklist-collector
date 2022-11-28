@@ -17,6 +17,7 @@ type User = {
   id: string;
   email: string;
   admin: boolean;
+  deckcheck: boolean;
 };
 
 type Tournament = {
@@ -28,6 +29,7 @@ type Tournament = {
   registration_info: string | null;
   payment_info: string | null;
   decklist_required: boolean;
+  blocked: boolean;
 };
 
 type TournamentPlayerBasicInfo = {
@@ -37,6 +39,8 @@ type TournamentPlayerBasicInfo = {
   first_name: string;
   last_name: string;
   email: string;
+  deckchecked: boolean;
+  notes: string;
 };
 
 type TournamentPlayerPending = TournamentPlayerBasicInfo & {
