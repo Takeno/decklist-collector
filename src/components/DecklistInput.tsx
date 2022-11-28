@@ -147,7 +147,7 @@ export default function DecklistInput({format, value, onChange}: Props) {
 
     setDecklist(
       parsed.cards
-        .filter((c) => c.validated)
+        // .filter((c) => c.validated)
         .map((c) => ({
           name: c.name,
           amount: c.amount,
