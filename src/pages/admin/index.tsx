@@ -6,6 +6,7 @@ import {PageTitle} from '../../components/Typography';
 import {useRequiredAdmin} from '../../contexts/UserContext';
 import {formatDate} from '../../utils/dates';
 import {
+  deletePlayerTournament,
   fetchAllPlayersByTournament,
   fetchTournaments,
   updatePlayerTournament,
@@ -14,6 +15,10 @@ import {
 export default function Admin() {
   useRequiredAdmin();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
+  const [status, setStatus] = useLocalStorage<TournamentPlayer['status'] | ''>(
+    'ADMIN-S',
+    ''
+  );
   const [nameFilter, setNameFilter] = useState('');
   const {data: players, mutate} = useSWR(
     '/player-by-tournament/' + tournament,
@@ -47,12 +52,31 @@ export default function Admin() {
     }
   };
 
+  const deletePlayer = async (id: number) => {
+    try {
+      const p = players?.find((p) => p.id === id);
+      if (p === undefined) {
+        throw new Error('player not found');
+      }
+
+      if (window.confirm("Sei sicuro? L'azione è irreversibile")) {
+        await deletePlayerTournament(p.id);
+      }
+
+      mutate();
+    } catch (e: any) {
+      alert(e.message);
+      console.error(e);
+    }
+  };
+
   const filtered = useMemo(() => {
     if (players === undefined) {
       return [];
     }
 
     return players
+      .filter((d) => status === '' || d.status === status)
       .filter((d) =>
         `${d.first_name} ${d.last_name}`
           .toLowerCase()
@@ -65,7 +89,7 @@ export default function Admin() {
       .sort((a, b) =>
         a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase())
       );
-  }, [players, nameFilter]);
+  }, [players, nameFilter, status]);
 
   return (
     <div className="container mx-auto px-4 mt-6">
@@ -85,6 +109,19 @@ export default function Admin() {
                 {t.name} - {formatDate(t.start_date)}
               </option>
             ))}
+          </select>
+        </div>
+        <div className="md:flex-1 pr-4">
+          <label className="block font-bold text-lg">Status:</label>
+          <select
+            className="w-full"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as any)}
+          >
+            <option value="">---</option>
+            <option value="payment-pending">payment-pending</option>
+            <option value="paid">paid</option>
+            <option value="decklist-submitted">decklist-submitted</option>
           </select>
         </div>
 
@@ -124,10 +161,14 @@ export default function Admin() {
               <td>{player.status}</td>
               <td>
                 {player.status === 'payment-pending' && (
-                  <button onClick={() => markAsPaid(player.id)}>
-                    Mark as paid
-                  </button>
+                  <>
+                    <button onClick={() => markAsPaid(player.id)}>
+                      Mark as paid
+                    </button>{' '}
+                    -{' '}
+                  </>
                 )}
+                <button onClick={() => deletePlayer(player.id)}>Delete</button>
               </td>
             </tr>
           ))}

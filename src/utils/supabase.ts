@@ -132,6 +132,14 @@ export async function updatePlayerTournament(
   return data[0];
 }
 
+export async function deletePlayerTournament(id: number): Promise<void> {
+  const {error} = await supabase.from('players').delete().match({id: id});
+
+  if (error) {
+    throw error;
+  }
+}
+
 export async function fetchTournamentPlayer(
   id: string
 ): Promise<TournamentPlayer | null> {
