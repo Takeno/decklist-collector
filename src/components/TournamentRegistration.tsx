@@ -33,6 +33,8 @@ export default function TournamentRegistration({tournament}: Props) {
         status: 'payment-pending',
         user_id: user.id,
         tournament_id: tournament.id,
+        deckchecked: false,
+        notes: '',
       });
       mutate(`/player/${user.id}/${tournament.id}`);
     } catch (e: any) {
