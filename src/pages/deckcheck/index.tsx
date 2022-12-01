@@ -34,7 +34,11 @@ export default function Admin() {
       )
       .map((d) => ({
         ...d,
-      }));
+        fullname: `${d.last_name} ${d.first_name}`,
+      }))
+      .sort((a, b) =>
+        a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase())
+      );
   }, [players, nameFilter]);
 
   return (
