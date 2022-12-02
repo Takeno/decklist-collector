@@ -154,7 +154,7 @@ export default function Admin() {
               className={i % 2 === 0 ? undefined : 'bg-gray-50'}
             >
               <td>
-                {player.fullname}
+                <abbr title={player.email}>{player.fullname}</abbr>
                 <span className="md:hidden">{player.tournaments.name}</span>
               </td>
               <td className="hidden md:block">{player.tournaments.name}</td>
