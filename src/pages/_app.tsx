@@ -11,10 +11,10 @@ export default function MyApp({Component, pageProps, router}: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to 4Seasons!</title>
+        <title>Welcome to Law League!</title>
         <meta
           name="description"
-          content="Register, pay and upload your decklist fully online"
+          content="Register upload your decklist, fully online"
         />
       </Head>
       <UserProvider>

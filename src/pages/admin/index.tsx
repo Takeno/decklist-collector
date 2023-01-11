@@ -23,7 +23,7 @@ export default function Admin() {
   );
   const [nameFilter, setNameFilter] = useState('');
   const {data: players, mutate} = useSWR(
-    '/player-by-tournament/' + tournament,
+    tournament ? '/player-by-tournament/' + tournament : undefined,
     () => fetchAllPlayersByTournament(tournament)
   );
 

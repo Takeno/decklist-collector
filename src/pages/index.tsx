@@ -8,7 +8,7 @@ import {fetchMyTournaments, fetchTournaments} from '../utils/supabase';
 
 const mapStatus: Record<TournamentPlayer['status'], string> = {
   'payment-pending': 'Waiting for payment',
-  paid: 'Paid',
+  paid: 'Decklist missing',
   'decklist-submitted': 'Decklist submitted',
 };
 

@@ -30,7 +30,7 @@ export default function TournamentRegistration({tournament}: Props) {
       await createPlayerTournament({
         ...data,
         email: user.email,
-        status: 'payment-pending',
+        status: 'paid',
         user_id: user.id,
         tournament_id: tournament.id,
         deckchecked: false,
