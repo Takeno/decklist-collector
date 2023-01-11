@@ -57,6 +57,22 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
+    // This need because of https://github.com/supabase/gotrue-js/blob/master/src/GoTrueClient.ts#L183-L188
+    // session is replaced if error is present in the url and there is no way to trigger it manually
+
+    // if access_token is present, set session
+    if(getParameterByName('access_token')) {
+      supabase.auth.setSession({
+        access_token: getParameterByName('access_token')!,
+        refresh_token: getParameterByName('refresh_token')!,
+      });
+
+      window.location.hash = '';
+
+      return;
+    }
+
+
     supabase.auth.getSession().then(({data: {session}}) => {
       if (session === null) {
         console.info('No session available');
@@ -96,6 +112,7 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
         admin: session.user.user_metadata.admin || false,
         deckcheck: session.user.user_metadata.deckcheck || false,
       });
+      setLoading(false);
     });
 
     return () => {
@@ -123,3 +140,15 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
     </UserContext.Provider>
   );
 };
+
+
+function getParameterByName(name: string, url?: string) {
+  if (!url) url = window?.location?.href || ''
+  // eslint-disable-next-line no-useless-escape
+  name = name.replace(/[\[\]]/g, '\\$&')
+  const regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
+    results = regex.exec(url)
+  if (!results) return null
+  if (!results[2]) return ''
+  return decodeURIComponent(results[2].replace(/\+/g, ' '))
+}

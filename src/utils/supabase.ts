@@ -5,7 +5,11 @@ const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
 const supabaseAnonKey =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV6a2JzcGxoZHBmcWR0ZGJnaWlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NTk1NDQ1MTgsImV4cCI6MTk3NTEyMDUxOH0.uZVn_g8HZufxsCGWO_YFUlgor0tm3JKZwsxaabEJBj0';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    detectSessionInUrl: false,
+  }
+});
 
 export async function fetchMyLists(): Promise<Decklist[]> {
   const {data, error} = await supabase.from('decklists').select();
