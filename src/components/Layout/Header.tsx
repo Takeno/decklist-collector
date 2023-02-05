@@ -19,13 +19,9 @@ export default function Header() {
         <div className="container flex flex-wrap justify-between items-center mx-auto">
           <Link href="/">
             <a className="flex items-center">
-              <img
-                src={logo.src}
-                className="mr-3 h-6 sm:h-9"
-                alt="4Seasons Summer"
-              />
+              <img src={logo.src} className="mr-3 h-6 sm:h-9" alt="4Seasons" />
               <span className="self-center text-xl font-semibold whitespace-nowrap text-white">
-                4Seasons Autumn
+                4Seasons
               </span>
             </a>
           </Link>
