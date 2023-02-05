@@ -1,6 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 
-const CHANNEL = '4seasons';
+const CHANNEL = 'law-league';
 
 const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
 const supabaseAnonKey =
