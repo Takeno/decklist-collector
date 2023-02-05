@@ -1,5 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
-import {useEffect, useState} from 'react';
+
+const CHANNEL = '4seasons';
 
 const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
 const supabaseAnonKey =
@@ -8,12 +9,11 @@ const supabaseAnonKey =
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     detectSessionInUrl: false,
-  }
+  },
 });
 
 export async function fetchMyLists(): Promise<Decklist[]> {
   const {data, error} = await supabase.from('decklists').select();
-
   if (error) {
     throw error;
   }
@@ -25,7 +25,8 @@ export async function fetchTournaments(): Promise<Tournament[]> {
   const {data, error} = await supabase
     .from('tournaments')
     .select()
-    .order('start_date');
+    .order('start_date')
+    .eq('channel', CHANNEL);
 
   if (error) {
     throw error;
@@ -71,6 +72,7 @@ export async function fetchAllPlayersByTournament(
   let ops = supabase
     .from('players')
     .select('*, tournaments(name)')
+    .eq('tournaments(channel)', CHANNEL)
     .order('last_name');
 
   if (tId) {
