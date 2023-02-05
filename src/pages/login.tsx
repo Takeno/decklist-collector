@@ -27,7 +27,15 @@ export default function Login() {
   }, [user, router]);
 
   async function onSubmit(data: any) {
-    const {error} = await supabase.auth.signInWithOtp({email: data.email});
+    const {error} = await supabase.auth.signInWithOtp({
+      email: data.email,
+      options: {
+        emailRedirectTo:
+          window.location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : window.location.protocol + '//' + window.location.hostname,
+      },
+    });
     reset();
   }
 
