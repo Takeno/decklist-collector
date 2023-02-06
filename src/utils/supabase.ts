@@ -71,8 +71,8 @@ export async function fetchAllPlayersByTournament(
 ): Promise<Array<TournamentPlayer & {tournaments: {name: string}}>> {
   let ops = supabase
     .from('players')
-    .select('*, tournaments(name)')
-    .eq('tournaments(channel)', CHANNEL)
+    .select('*, tournaments!inner(*)')
+    .eq('tournaments.channel', CHANNEL)
     .order('last_name');
 
   if (tId) {
