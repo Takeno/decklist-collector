@@ -41,7 +41,7 @@ export default function Login() {
 
   return (
     <div className="container mx-auto px-4 mt-6 flex flex-col flex-1 justify-center">
-      <PageTitle>Welcome to 4Seasons Autumn!</PageTitle>
+      <PageTitle>Welcome to 4Seasons!</PageTitle>
 
       <p className="text-xl">
         Here you can reserve your seat, pay the entry fee and manage your
