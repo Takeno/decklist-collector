@@ -56,7 +56,7 @@ export default function Admin() {
         '' + (10000 + p.id),
         'IT',
         'player',
-        'enrolled',
+        p.status === 'payment-pending' ? 'not enrolled' : 'enrolled',
       ])
     );
 

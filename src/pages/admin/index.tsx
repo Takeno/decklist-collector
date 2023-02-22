@@ -1,5 +1,6 @@
+import latinize from 'latinize';
 import Link from 'next/link';
-import {useMemo, useState} from 'react';
+import {useCallback, useMemo, useState} from 'react';
 import useSWR from 'swr';
 import {useLocalStorage} from 'usehooks-ts';
 import {PageTitle} from '../../components/Typography';
@@ -70,6 +71,38 @@ export default function Admin() {
     }
   };
 
+  const downloadCsv = useCallback(() => {
+    if (players === undefined) {
+      return;
+    }
+
+    const content = [
+      ['firstName', 'lastName', 'dci', 'country', 'role', 'status', 'email'],
+    ].concat(
+      players.map((p) => [
+        latinize(p.first_name).replace("'", ' ').trim(),
+        latinize(p.last_name).replace("'", ' ').trim(),
+        '' + (10000 + p.id),
+        'IT',
+        'player',
+        p.status === 'payment-pending' ? 'not enrolled' : 'enrolled',
+        p.email,
+      ])
+    );
+
+    const txt = content.map((row) => row.join(';')).join('\n');
+
+    const a = document.createElement('a');
+    const url = window.URL.createObjectURL(new Blob([txt], {type: 'text/csv'}));
+    a.href = url;
+    a.download = 'players.csv';
+
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  }, [players]);
+
   const filtered = useMemo(() => {
     if (players === undefined) {
       return [];
@@ -137,6 +170,8 @@ export default function Admin() {
       </div>
 
       <h1>{filtered.length} players found</h1>
+
+      <button onClick={downloadCsv}>Download csv players</button>
 
       <table className="table-auto w-full">
         <thead>
