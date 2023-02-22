@@ -74,14 +74,17 @@ export default function DecklistInput({format, value, onChange}: Props) {
   const handleAdd = (card: string, sideboard: boolean = false) => {
     setDecklist((cards) => {
       const index = cards.findIndex(
-        (c) => c.name === card && (c.type === 'Sideboard') === sideboard
+        (c) =>
+          c.name === card &&
+          ((c.type === 'Sideboard') === sideboard || c.type === 'Attraction')
       );
 
       if (index === -1) {
+        const type = extractType(card);
         return cards.concat({
           amount: 1,
           name: card,
-          type: sideboard ? 'Sideboard' : extractType(card),
+          type: sideboard && type !== 'Attraction' ? 'Sideboard' : type,
         });
       }
 
@@ -94,7 +97,9 @@ export default function DecklistInput({format, value, onChange}: Props) {
   const handleDiff = (card: string, sideboard: boolean, q: number) => {
     setDecklist((cards) => {
       const index = cards.findIndex(
-        (c) => c.name === card && (c.type === 'Sideboard') === sideboard
+        (c) =>
+          c.name === card &&
+          ((c.type === 'Sideboard') === sideboard || c.type === 'Attraction')
       );
 
       if (index === -1) {
@@ -162,11 +167,12 @@ export default function DecklistInput({format, value, onChange}: Props) {
     }
 
     const main = decklist
-      .filter((c) => c.type !== 'Sideboard')
+      .filter((c) => ['Sideboard', 'Attraction'].includes(c.type) === false)
       .map((c) => `${c.amount} ${c.name}`);
 
     const side = decklist
-      .filter((c) => c.type === 'Sideboard')
+      .filter((c) => ['Sideboard', 'Attraction'].includes(c.type) === true)
+      .sort((a, b) => b.type.localeCompare(a.type))
       .map((c) => `${c.amount} ${c.name}`);
 
     onChange(main.concat('\n').concat(side).join('\n'));
@@ -284,7 +290,7 @@ export default function DecklistInput({format, value, onChange}: Props) {
           </div>
 
           <div className="columns-2">
-            {['Sideboard'].map((type) => {
+            {['Sideboard', 'Attraction'].map((type) => {
               if (decklist.some((c) => c.type === type) === false) {
                 return null;
               }

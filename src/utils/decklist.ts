@@ -8,6 +8,7 @@ export type CardType =
   | 'Enchantment'
   | 'Creature'
   | 'Planeswalker'
+  | 'Attraction'
   | 'Other'
   | 'Sideboard';
 
@@ -61,10 +62,12 @@ export function parseList(input: string): DecklistParsed {
 
       const validated = name.toLowerCase() in availableCards;
 
+      const type = extractType(name);
+
       cards.push({
         amount: amount,
         name: name,
-        type: 'Sideboard',
+        type: type === 'Attraction' ? type : 'Sideboard',
         validated,
       });
     }
@@ -100,6 +103,7 @@ export function extractType(card: string): CardType {
     'Planeswalker',
     'Instant',
     'Sorcery',
+    'Attraction',
   ] as CardType[]) {
     if (types.includes(myType)) {
       return myType;
