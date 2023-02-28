@@ -36,6 +36,13 @@ export default function Login() {
             : window.location.protocol + '//' + window.location.hostname,
       },
     });
+
+    if (error) {
+      alert(
+        'Si è verificato un errore. Si prega di riprovare più tardi. Ragavan sta creando qualche problema...'
+      );
+      return;
+    }
     reset();
   }
 
