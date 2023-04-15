@@ -1,6 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 
-const CHANNEL = '4seasons';
+const CHANNEL = 'paupergeddon-pisa';
 
 const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
 const supabaseAnonKey =
