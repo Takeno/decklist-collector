@@ -161,3 +161,20 @@ export async function fetchTournamentPlayer(
 
   return data[0];
 }
+
+export async function fetchRoles(
+  userId: string
+): Promise<{channel: string; role: 'admin' | 'deckcheck'}[]> {
+  const {data, error} = await supabase
+    .from('acl')
+    .select('*')
+    .eq('user_id', userId)
+    .eq('channel', CHANNEL);
+
+  if (error) {
+    throw error;
+  }
+
+  console.log(data);
+  return data;
+}

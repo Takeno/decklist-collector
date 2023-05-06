@@ -6,7 +6,7 @@ import {
   useState,
 } from 'react';
 import type {PropsWithChildren} from 'react';
-import {supabase} from '../utils/supabase';
+import {fetchRoles, supabase} from '../utils/supabase';
 
 type UserContextType = {
   user: User | null;
@@ -61,7 +61,7 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
     // session is replaced if error is present in the url and there is no way to trigger it manually
 
     // if access_token is present, set session
-    if(getParameterByName('access_token')) {
+    if (getParameterByName('access_token')) {
       supabase.auth.setSession({
         access_token: getParameterByName('access_token')!,
         refresh_token: getParameterByName('refresh_token')!,
@@ -72,22 +72,23 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
       return;
     }
 
-
-    supabase.auth.getSession().then(({data: {session}}) => {
+    supabase.auth.getSession().then(async ({data: {session}}) => {
       if (session === null) {
         console.info('No session available');
         setLoading(false);
         return;
       }
 
-      console.log(session.user);
+      const roles = await fetchRoles(session.user.id);
       setLoading(false);
 
       setUser({
         id: session.user.id,
         email: session.user.email!,
-        admin: session.user.user_metadata.admin || false,
-        deckcheck: session.user.user_metadata.deckcheck || false,
+        admin: roles.some((r) => r.role === 'admin'),
+        deckcheck: roles.some(
+          (r) => r.role === 'admin' || r.role === 'deckcheck'
+        ),
       });
     });
   }, []);
@@ -95,7 +96,7 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
   useEffect(() => {
     const {
       data: {subscription},
-    } = supabase.auth.onAuthStateChange((event, session) => {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         return;
@@ -105,12 +106,15 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
         return;
       }
 
-      console.log(event, session.user);
+      const roles = await fetchRoles(session.user.id);
+
       setUser({
         id: session.user.id,
         email: session.user.email!,
-        admin: session.user.user_metadata.admin || false,
-        deckcheck: session.user.user_metadata.deckcheck || false,
+        admin: roles.some((r) => r.role === 'admin'),
+        deckcheck: roles.some(
+          (r) => r.role === 'admin' || r.role === 'deckcheck'
+        ),
       });
       setLoading(false);
     });
@@ -141,14 +145,19 @@ export const UserProvider = ({children}: PropsWithChildren<{}>) => {
   );
 };
 
-
 function getParameterByName(name: string, url?: string) {
-  if (!url) url = window?.location?.href || ''
+  if (!url) {
+    url = window?.location?.href || '';
+  }
   // eslint-disable-next-line no-useless-escape
-  name = name.replace(/[\[\]]/g, '\\$&')
+  name = name.replace(/[\[\]]/g, '\\$&');
   const regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
-    results = regex.exec(url)
-  if (!results) return null
-  if (!results[2]) return ''
-  return decodeURIComponent(results[2].replace(/\+/g, ' '))
+    results = regex.exec(url);
+  if (!results) {
+    return null;
+  }
+  if (!results[2]) {
+    return '';
+  }
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
