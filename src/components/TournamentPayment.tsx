@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import {PageTitle} from './Typography';
 
@@ -35,8 +36,7 @@ export default function TournamentPayment({tournament, player}: Props) {
 
       <p>
         We&apos;ve received your registration request and your seat is reserved!
-      </p>
-      <p>
+        <br />
         Now, the next step is paying the entry fee. Currently, we accept only
         Paypal.
       </p>
@@ -50,6 +50,25 @@ export default function TournamentPayment({tournament, player}: Props) {
       )}
 
       {/* <TournamentStatus tournament={tournament} player={player} /> */}
+
+      <div className="text-center">
+        <p className=" text-red-600">
+          Ci raccomandiamo di seguire la procedura delle foto (Paypal-Amici e
+          Familiari)
+        </p>
+        <Image
+          src={require('../assets/payment-guide.png')}
+          width="340"
+          height="214"
+          alt="Payment guide"
+        />
+        <Image
+          src={require('../assets/payment-guide-1.png')}
+          width="384"
+          height="310"
+          alt="Payment guide"
+        />
+      </div>
 
       <div className="flex justify-center align-middle">
         <a
