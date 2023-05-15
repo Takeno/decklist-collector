@@ -49,7 +49,7 @@ export default function TournamentRegistration({tournament}: Props) {
     }
   };
 
-  if (tournament.blocked) {
+  if (tournament.blocked || tournament.available_seats === 0) {
     return (
       <div className="container mx-auto mt-6 px-4">
         <Link href="/">

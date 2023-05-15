@@ -54,6 +54,12 @@ const Home: NextPage = () => {
               </th>
               <th
                 scope="col"
+                className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
+              >
+                Availability
+              </th>
+              <th
+                scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
               >
                 Status
@@ -93,13 +99,18 @@ const Home: NextPage = () => {
                   <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell first-letter:uppercase">
                     {t.format}
                   </td>
+                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell first-letter:uppercase">
+                    {t.available_seats}
+                  </td>
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {myTournament?.status
                       ? mapStatus[myTournament?.status]
                       : '-'}
                   </td>
                   <td className="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    {(t.blocked === false || myTournament !== undefined) && (
+                    {(t.available_seats > 0 ||
+                      t.blocked === false ||
+                      myTournament !== undefined) && (
                       <Link href={`/t/${t.id}`}>
                         <a className="text-indigo-600 hover:text-indigo-900">
                           {myTournament?.status
