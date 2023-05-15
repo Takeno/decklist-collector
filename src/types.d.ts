@@ -30,6 +30,7 @@ type Tournament = {
   payment_info: string | null;
   decklist_required: boolean;
   blocked: boolean;
+  available_seats: number;
 };
 
 type TournamentPlayerBasicInfo = {
