@@ -12,6 +12,7 @@ import {
   fetchTournaments,
   updatePlayerTournament,
 } from '../../utils/supabase';
+import { generateAndDownloadDecklists } from '../../utils/guidi-exporter';
 
 export default function Admin() {
   useRequiredAdmin();
@@ -103,6 +104,19 @@ export default function Admin() {
     a.remove();
   }, [players]);
 
+  const downloadDecklists = useCallback(() => {
+    if(players === undefined) return;
+
+    function predicate(p:TournamentPlayer):p is TournamentPlayerDecklistSubmitted {
+      return p.status === 'decklist-submitted';
+    }
+
+    // @ts-expect-error
+    const submitted:TournamentPlayerDecklistSubmitted[] = players.filter(predicate);
+
+    generateAndDownloadDecklists(submitted);
+  }, [players]);
+
   const filtered = useMemo(() => {
     if (players === undefined) {
       return [];
@@ -171,7 +185,8 @@ export default function Admin() {
 
       <h1>{filtered.length} players found</h1>
 
-      <button onClick={downloadCsv}>Download csv players</button>
+      <button onClick={downloadCsv}>Download csv players</button> -{' '}
+      <button onClick={downloadDecklists}>Download all decklists</button>
 
       <table className="table-auto w-full">
         <thead>
