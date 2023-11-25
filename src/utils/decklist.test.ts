@@ -10,7 +10,7 @@ describe('Decklist parser', () => {
     const parsed = parseList(
       `3x Lightning Bolt
 3 Rift Bolt
-x4 Goblin Guide
+4 Goblin Guide
 
  4X Deflecting Palm`
     );
@@ -389,5 +389,27 @@ describe('Split Maindeck and Sideboard', () => {
     expect(decklist.cards.filter((c) => c.type === 'Sideboard')).toHaveLength(
       0
     );
+  });
+
+  it('#8 with Xander\'s lounge', () => {
+    const decklist = parseList(`3 Xander's lounge`);
+
+    expect(decklist.cards).toContainEqual({
+      amount: 3,
+      name: 'Xander\'s lounge',
+      type: 'Land',
+      validated: true,
+    });
+  });
+
+  it('#9 with Xander\'s lounge', () => {
+    const decklist = parseList(`3x Xander's lounge`);
+
+    expect(decklist.cards).toContainEqual({
+      amount: 3,
+      name: 'Xander\'s lounge',
+      type: 'Land',
+      validated: true,
+    });
   });
 });
