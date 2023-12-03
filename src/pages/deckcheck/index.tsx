@@ -104,7 +104,10 @@ export default function Admin() {
         const rows = reader.result.split('\n');
 
         rows.forEach(
-          handleRow
+          (row:string, index:number) => {
+            if(index === 0 || index === 1) return;
+            handleRow(row)
+          }
         );
       };
 
@@ -196,7 +199,7 @@ export default function Admin() {
 
       <h1>{filtered.length} players found</h1>
 
-      <button onClick={downloadCsv}>Download csv players</button>
+      <button onClick={downloadCsv}>Download csv players</button>{' - '}
       <button onClick={importTables}>Import tables from Walter</button>
 
       <table className="table-auto w-full">
