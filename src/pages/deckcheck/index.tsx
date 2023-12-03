@@ -16,6 +16,7 @@ export default function Admin() {
   useRequiredDeckcheck();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
   const [nameFilter, setNameFilter] = useState('');
+  const [sortBy, setSortBy] = useState<'name'|'dc'>('name');
   const {data: players} = useSWR(tournament && '/dc/' + tournament, () =>
     fetchAllPlayersByTournament(tournament)
   );
@@ -36,11 +37,18 @@ export default function Admin() {
       .map((d) => ({
         ...d,
         fullname: `${d.last_name} ${d.first_name}`,
-      }))
-      .sort((a, b) =>
-        a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase())
-      );
-  }, [players, nameFilter]);
+      })).sort((a, b) => {
+        if(sortBy === 'name') return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
+
+
+        if(a.deckchecked === b.deckchecked) return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
+
+        if(a.deckchecked) return -1;
+
+        return 1;
+
+      })
+  }, [players, nameFilter, sortBy]);
 
   const downloadCsv = useCallback(() => {
     if (players === undefined) {
@@ -94,6 +102,17 @@ export default function Admin() {
           </select>
         </div>
 
+        <div className="md:flex-1 pr-4">
+          <label className="block font-bold text-lg">Sort by:</label>
+          <select
+            className="w-full"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as 'dc'|'name')}
+          >
+            <option value="name">Name</option>
+            <option value="dc">DC</option>
+            </select>
+        </div>
         <div className="md:flex-1 pr-4">
           <label className="block font-bold text-lg">Player:</label>
           <input
