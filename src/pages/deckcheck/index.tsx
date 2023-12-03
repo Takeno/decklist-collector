@@ -8,16 +8,18 @@ import {useRequiredDeckcheck} from '../../contexts/UserContext';
 import {formatDate} from '../../utils/dates';
 import {parseList} from '../../utils/decklist';
 import {
+  clearTableNumber,
   fetchAllPlayersByTournament,
   fetchTournaments,
+  updateTableNumber,
 } from '../../utils/supabase';
 
 export default function Admin() {
   useRequiredDeckcheck();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
   const [nameFilter, setNameFilter] = useState('');
-  const [sortBy, setSortBy] = useState<'name'|'dc'>('name');
-  const {data: players} = useSWR(tournament && '/dc/' + tournament, () =>
+  const [sortBy, setSortBy] = useState<'name'|'dc'|'table'>('name');
+  const {data: players, mutate} = useSWR(tournament && '/dc/' + tournament, () =>
     fetchAllPlayersByTournament(tournament)
   );
 
@@ -39,6 +41,8 @@ export default function Admin() {
         fullname: `${d.last_name} ${d.first_name}`,
       })).sort((a, b) => {
         if(sortBy === 'name') return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
+        //@ts-expect-error
+        if(sortBy === 'table') return a.table === null ? 1 : b.table === null ? -1 : a.table - b.table;
 
 
         if(a.deckchecked === b.deckchecked) return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
@@ -81,6 +85,71 @@ export default function Admin() {
     a.remove();
   }, [players]);
 
+
+  const importTables = async () => {
+    if(tournament === '') {
+      alert('Seleziona un torneo');
+      return;
+    }
+
+    const input = document.createElement('input');
+    input.type = 'file';
+
+    input.addEventListener('change', (e:any) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        //@ts-expect-error
+        const rows = reader.result.split('\n');
+
+        rows.forEach(
+          handleRow
+        );
+      };
+
+      reader.readAsText(file);
+    });
+
+    await clearTableNumber(tournament);
+
+    input.click();
+
+    function findUser(firstName:string, lastName:string) {
+      return players?.find(p =>
+        firstName.toLowerCase() === latinize(p.first_name).replace("'", ' ').trim().toLowerCase() &&
+        lastName.toLowerCase() === latinize(p.last_name).replace("'", ' ').trim().toLowerCase()
+      )
+    }
+
+    function handleRow(row:string) {
+      // "135","Haudenschild, Fabian","IT","0","Bandera, Michele","IT","0"
+      const [table, nameP1,,, nameP2] = row.split('","').map(s => s.replaceAll('"',''));
+
+
+      if(table === '-') {
+        const [lastName1, firstName1] = nameP1.split(", ");
+        const p = findUser(firstName1, lastName1);
+        p && updateTableNumber(p.id, 0);
+
+        return;
+      }
+
+      const [lastName1, firstName1] = nameP1.split(", ");
+      const p1 = findUser(firstName1, lastName1);
+      p1 && updateTableNumber(p1.id, +table);
+
+      const [lastName2, firstName2] = nameP2.split(", ");
+      const p2 = findUser(firstName2, lastName2);
+      if(p2 === undefined) {
+        console.log('Non ho trovato', [firstName2, lastName2, table]);
+      }
+      p2 && updateTableNumber(p2.id, +table);
+    }
+
+  }
+
+
   return (
     <div className="container mx-auto px-4 mt-6">
       <PageTitle>Deck Check Panel</PageTitle>
@@ -111,6 +180,7 @@ export default function Admin() {
           >
             <option value="name">Name</option>
             <option value="dc">DC</option>
+            <option value="table">Table</option>
             </select>
         </div>
         <div className="md:flex-1 pr-4">
@@ -127,10 +197,12 @@ export default function Admin() {
       <h1>{filtered.length} players found</h1>
 
       <button onClick={downloadCsv}>Download csv players</button>
+      <button onClick={importTables}>Import tables from Walter</button>
 
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b font-bold">
+            <td>Table</td>
             <td>Player</td>
             <td className="hidden md:block">Archetype</td>
             <td>DC</td>
@@ -143,6 +215,11 @@ export default function Admin() {
               key={player.id}
               className={i % 2 === 0 ? undefined : 'bg-gray-50'}
             >
+              <td>
+                {
+                //@ts-expect-error
+                player.table}
+              </td>
               <td>
                 <Link href={`/deckcheck/${player.id}`}>
                   <a className="hover:underline">

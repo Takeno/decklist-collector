@@ -138,6 +138,39 @@ export async function updatePlayerTournament(
   return data[0];
 }
 
+export async function clearTableNumber(
+  tournamentId: Tournament['id']
+): Promise<void> {
+  const {data, error} = await supabase
+    .from('players')
+    .update({table: null})
+    .match({tournament_id: tournamentId})
+    .select();
+
+  if (error) {
+    throw error;
+  }
+
+  return data[0];
+}
+
+export async function updateTableNumber(
+  id: TournamentPlayer['id'],
+  tableNumber: number
+): Promise<void> {
+  const {data, error} = await supabase
+    .from('players')
+    .update({table: tableNumber})
+    .match({id})
+    .select();
+
+  if (error) {
+    throw error;
+  }
+
+  return data[0];
+}
+
 export async function deletePlayerTournament(id: number): Promise<void> {
   const {error} = await supabase.from('players').delete().match({id: id});
 
