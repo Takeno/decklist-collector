@@ -206,7 +206,9 @@ export default function Admin() {
             >
               <td>
                 <abbr title={player.email}>{player.fullname}</abbr>
-                <span className="md:hidden">{player.tournaments.name}</span>
+                <span className="block md:hidden">
+                  {player.tournaments.name}
+                </span>
               </td>
               <td className="hidden md:block">{player.tournaments.name}</td>
               <td>{player.status}</td>
