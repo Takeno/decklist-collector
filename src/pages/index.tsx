@@ -46,12 +46,12 @@ const Home: NextPage = () => {
               >
                 Start Date
               </th>
-              <th
+              {/* <th
                 scope="col"
                 className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 sm:table-cell"
               >
                 Format
-              </th>
+              </th> */}
               <th
                 scope="col"
                 className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
@@ -90,9 +90,9 @@ const Home: NextPage = () => {
                   <td className="hidden px-3 py-4 text-sm text-gray-500 lg:table-cell">
                     {formatDate(t.start_date)}
                   </td>
-                  <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell first-letter:uppercase">
+                  {/* <td className="hidden px-3 py-4 text-sm text-gray-500 sm:table-cell first-letter:uppercase">
                     {t.format}
-                  </td>
+                  </td> */}
                   <td className="px-3 py-4 text-sm text-gray-500">
                     {myTournament?.status
                       ? mapStatus[myTournament?.status]

@@ -1,6 +1,6 @@
 import {createClient} from '@supabase/supabase-js';
 
-const CHANNEL = '4seasons';
+const CHANNEL = '4seasons-lorcana';
 
 const supabaseUrl = 'https://ezkbsplhdpfqdtdbgiir.supabase.co';
 const supabaseAnonKey =

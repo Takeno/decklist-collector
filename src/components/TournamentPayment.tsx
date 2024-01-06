@@ -53,7 +53,7 @@ export default function TournamentPayment({tournament, player}: Props) {
 
       <div className="flex justify-center align-middle">
         <a
-          href={`https://www.paypal.com/paypalme/4STournaments/${
+          href={`https://www.paypal.com/paypalme/lorcanaleagueitalia/${
             tournament.price / 100
           }`}
           className="button"

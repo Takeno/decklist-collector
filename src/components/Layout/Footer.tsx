@@ -8,7 +8,7 @@ export default function Footer() {
           Powered by{' '}
           <a
             className="hover:underline"
-            href="https://magic-events.gg?utm_source=decklist&utm_medium=web&utm_campaign=4seasons-autumn"
+            href="https://magic-events.gg?utm_source=decklist&utm_medium=web&utm_campaign=4seasons-lorcana"
             target="_blank"
             rel="noreferrer"
           >

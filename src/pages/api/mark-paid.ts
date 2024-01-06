@@ -21,7 +21,7 @@ export default async function handler(
   });
 
   await transporter.sendMail({
-    from: '4Seasons <decklist@mg.magic-events.gg>',
+    from: '4Seasons Lorcana Winter League <decklist@mg.magic-events.gg>',
     subject: 'Your payment is confirmed',
     to: email,
     html: `<!DOCTYPE html>
@@ -133,7 +133,7 @@ export default async function handler(
                                   <td class="pad" style="width:100%;text-align:center;">
                                     <h1
                                       style="margin: 0; color: #555555; font-size: 23px; font-family: Arial, Helvetica Neue, Helvetica, sans-serif; line-height: 120%; text-align: left; direction: ltr; font-weight: 700; letter-spacing: normal; margin-top: 0; margin-bottom: 0;">
-                                      Welcome to 4Seasons Autumn!</h1>
+                                      Welcome to Lorcana Winter League!</h1>
                                   </td>
                                 </tr>
                               </table>
@@ -158,8 +158,8 @@ export default async function handler(
                                 <tr>
                                   <td class="pad">
                                     <div align="center" class="alignment">
-                                      <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://4seasons.magic-events.gg" style="height:38px;width:184px;v-text-anchor:middle;" arcsize="11%" stroke="false" fillcolor="#3AAEE0"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:14px"><![endif]--><a
-                                        href="https://4seasons.magic-events.gg"
+                                      <!--[if mso]><v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="https://4seasons-lorcana.magic-events.gg" style="height:38px;width:184px;v-text-anchor:middle;" arcsize="11%" stroke="false" fillcolor="#3AAEE0"><w:anchorlock/><v:textbox inset="0px,0px,0px,0px"><center style="color:#ffffff; font-family:Arial, sans-serif; font-size:14px"><![endif]--><a
+                                        href="https://4seasons-lorcana.magic-events.gg"
                                         style="text-decoration:none;display:inline-block;color:#ffffff;background-color:#3AAEE0;border-radius:4px;width:auto;border-top:1px solid #3AAEE0;font-weight:400;border-right:1px solid #3AAEE0;border-bottom:1px solid #3AAEE0;border-left:1px solid #3AAEE0;padding-top:5px;padding-bottom:5px;font-family:Arial, Helvetica Neue, Helvetica, sans-serif;text-align:center;mso-border-alt:none;word-break:keep-all;"
                                         target="_blank"><span
                                           style="padding-left:20px;padding-right:20px;font-size:14px;display:inline-block;letter-spacing:normal;"><span

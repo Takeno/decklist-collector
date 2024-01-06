@@ -21,7 +21,7 @@ export default function Header() {
             <a className="flex items-center">
               <img src={logo.src} className="mr-3 h-6 sm:h-9" alt="4Seasons" />
               <span className="self-center text-xl font-semibold whitespace-nowrap text-white">
-                4Seasons
+                4Seasons Lorcana
               </span>
             </a>
           </Link>
@@ -53,7 +53,7 @@ export default function Header() {
             )}
             <div className="" id="navbar-default">
               <a
-                href="mailto:Legacy4Seasons@gmail.com"
+                href="mailto:lorcanaleagueitalia@gmail.com"
                 className="block py-2 pr-4 pl-3 text-white"
               >
                 Contact
