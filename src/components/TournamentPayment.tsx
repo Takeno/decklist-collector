@@ -38,8 +38,16 @@ export default function TournamentPayment({tournament, player}: Props) {
       </p>
       <p>
         Now, the next step is paying the entry fee. Currently, we accept only
-        Paypal.
+        Bank Transfer:
       </p>
+      <p>
+        Bank Name: Sammelkartenspielverein
+        <br />
+        IBAN: AT61 3474 1000 0040 6454
+        <br />
+        BIC: RZOOAT2L741
+      </p>
+      <p>Please, specify tournament name and player name.</p>
       <p className="">
         <span className="italic">Caution:</span> The validation is manual; you
         will receive an email when the payment is registered.
@@ -50,24 +58,6 @@ export default function TournamentPayment({tournament, player}: Props) {
       )}
 
       {/* <TournamentStatus tournament={tournament} player={player} /> */}
-
-      <div className="flex justify-center align-middle">
-        <a
-          href={`https://www.paypal.com/paypalme/4STournaments/${
-            tournament.price / 100
-          }`}
-          className="button"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Pay here{' '}
-          {new Intl.NumberFormat(undefined, {
-            style: 'currency',
-            currency: 'EUR',
-          }).format(tournament.price / 100)}
-        </a>
-        .
-      </div>
     </div>
   );
 }

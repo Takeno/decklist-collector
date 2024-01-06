@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {useRouter} from 'next/router';
-import logo from '../../assets/logo-four-seasons.png';
+import logo from '../../assets/logo-all.png';
 import {useUser} from '../../contexts/UserContext';
 
 export default function Header() {
@@ -15,13 +15,17 @@ export default function Header() {
 
   return (
     <header>
-      <nav className="bg-gray-900 border-gray-200 px-2 sm:px-4 py-2.5">
+      <nav className="bg-gray-900 border-gray-200 px-2 sm:px-4">
         <div className="container flex flex-wrap justify-between items-center mx-auto">
           <Link href="/">
             <a className="flex items-center">
-              <img src={logo.src} className="mr-3 h-6 sm:h-9" alt="4Seasons" />
+              <img
+                src={logo.src}
+                className="mr-3 h-6 sm:h-16"
+                alt="Austrian Legacy League"
+              />
               <span className="self-center text-xl font-semibold whitespace-nowrap text-white">
-                4Seasons
+                Austrian Legacy League
               </span>
             </a>
           </Link>
@@ -53,7 +57,7 @@ export default function Header() {
             )}
             <div className="" id="navbar-default">
               <a
-                href="mailto:Legacy4Seasons@gmail.com"
+                href="mailto:austrian-legacy@gmx.at"
                 className="block py-2 pr-4 pl-3 text-white"
               >
                 Contact
