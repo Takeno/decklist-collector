@@ -12,7 +12,7 @@ import {
   fetchTournaments,
   updatePlayerTournament,
 } from '../../utils/supabase';
-import { generateAndDownloadDecklists } from '../../utils/guidi-exporter';
+import {generateAndDownloadDecklists} from '../../utils/guidi-exporter';
 
 export default function Admin() {
   useRequiredAdmin();
@@ -105,14 +105,19 @@ export default function Admin() {
   }, [players]);
 
   const downloadDecklists = useCallback(() => {
-    if(players === undefined) return;
+    if (players === undefined) {
+      return;
+    }
 
-    function predicate(p:TournamentPlayer):p is TournamentPlayerDecklistSubmitted {
+    function predicate(
+      p: TournamentPlayer
+    ): p is TournamentPlayerDecklistSubmitted {
       return p.status === 'decklist-submitted';
     }
 
     // @ts-expect-error
-    const submitted:TournamentPlayerDecklistSubmitted[] = players.filter(predicate);
+    const submitted: TournamentPlayerDecklistSubmitted[] =
+      players.filter(predicate);
 
     generateAndDownloadDecklists(submitted);
   }, [players]);
@@ -141,7 +146,6 @@ export default function Admin() {
   return (
     <div className="container mx-auto px-4 mt-6">
       <PageTitle>Admin panel</PageTitle>
-
       <div className="flex flex-col mb-8 md:flex-row md:justify-between">
         <div className="md:flex-1 pr-4">
           <label className="block font-bold text-lg">Tournament:</label>
@@ -182,12 +186,9 @@ export default function Admin() {
           />
         </div>
       </div>
-
       <h1>{filtered.length} players found</h1>
-
       <button onClick={downloadCsv}>Download csv players</button> -{' '}
       <button onClick={downloadDecklists}>Download all decklists</button>
-
       <table className="table-auto w-full">
         <thead>
           <tr className="border-b font-bold">

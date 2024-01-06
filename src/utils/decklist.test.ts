@@ -391,23 +391,23 @@ describe('Split Maindeck and Sideboard', () => {
     );
   });
 
-  it('#8 with Xander\'s lounge', () => {
+  it("#8 with Xander's lounge", () => {
     const decklist = parseList(`3 Xander's lounge`);
 
     expect(decklist.cards).toContainEqual({
       amount: 3,
-      name: 'Xander\'s lounge',
+      name: "Xander's lounge",
       type: 'Land',
       validated: true,
     });
   });
 
-  it('#9 with Xander\'s lounge', () => {
+  it("#9 with Xander's lounge", () => {
     const decklist = parseList(`3x Xander's lounge`);
 
     expect(decklist.cards).toContainEqual({
       amount: 3,
-      name: 'Xander\'s lounge',
+      name: "Xander's lounge",
       type: 'Land',
       validated: true,
     });

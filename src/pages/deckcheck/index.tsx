@@ -18,9 +18,10 @@ export default function Admin() {
   useRequiredDeckcheck();
   const [tournament, setTournament] = useLocalStorage('DC-T', '');
   const [nameFilter, setNameFilter] = useState('');
-  const [sortBy, setSortBy] = useState<'name'|'dc'|'table'>('name');
-  const {data: players, mutate} = useSWR(tournament && '/dc/' + tournament, () =>
-    fetchAllPlayersByTournament(tournament)
+  const [sortBy, setSortBy] = useState<'name' | 'dc' | 'table'>('name');
+  const {data: players, mutate} = useSWR(
+    tournament && '/dc/' + tournament,
+    () => fetchAllPlayersByTournament(tournament)
   );
 
   const {data: tournaments} = useSWR('/tournaments', () => fetchTournaments());
@@ -39,19 +40,34 @@ export default function Admin() {
       .map((d) => ({
         ...d,
         fullname: `${d.last_name} ${d.first_name}`,
-      })).sort((a, b) => {
-        if(sortBy === 'name') return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
-        //@ts-expect-error
-        if(sortBy === 'table') return a.table === null ? 1 : b.table === null ? -1 : a.table - b.table;
+      }))
+      .sort((a, b) => {
+        if (sortBy === 'name') {
+          return a.fullname
+            .toLowerCase()
+            .localeCompare(b.fullname.toLowerCase());
+        }
 
+        if (sortBy === 'table') {
+          return a.table === null
+            ? 1
+            : b.table === null
+            ? -1
+            : a.table - b.table;
+        }
 
-        if(a.deckchecked === b.deckchecked) return a.fullname.toLowerCase().localeCompare(b.fullname.toLowerCase());
+        if (a.deckchecked === b.deckchecked) {
+          return a.fullname
+            .toLowerCase()
+            .localeCompare(b.fullname.toLowerCase());
+        }
 
-        if(a.deckchecked) return -1;
+        if (a.deckchecked) {
+          return -1;
+        }
 
         return 1;
-
-      })
+      });
   }, [players, nameFilter, sortBy]);
 
   const downloadCsv = useCallback(() => {
@@ -85,9 +101,8 @@ export default function Admin() {
     a.remove();
   }, [players]);
 
-
   const importTables = async () => {
-    if(tournament === '') {
+    if (tournament === '') {
       alert('Seleziona un torneo');
       return;
     }
@@ -95,7 +110,7 @@ export default function Admin() {
     const input = document.createElement('input');
     input.type = 'file';
 
-    input.addEventListener('change', (e:any) => {
+    input.addEventListener('change', (e: any) => {
       const file = e.target.files[0];
       const reader = new FileReader();
 
@@ -103,12 +118,12 @@ export default function Admin() {
         //@ts-expect-error
         const rows = reader.result.split('\n');
 
-        rows.forEach(
-          (row:string, index:number) => {
-            if(index === 0 || index === 1) return;
-            handleRow(row)
+        rows.forEach((row: string, index: number) => {
+          if (index === 0 || index === 1) {
+            return;
           }
-        );
+          handleRow(row);
+        });
       };
 
       reader.readAsText(file);
@@ -118,40 +133,42 @@ export default function Admin() {
 
     input.click();
 
-    function findUser(firstName:string, lastName:string) {
-      return players?.find(p =>
-        firstName.toLowerCase() === latinize(p.first_name).replace("'", ' ').trim().toLowerCase() &&
-        lastName.toLowerCase() === latinize(p.last_name).replace("'", ' ').trim().toLowerCase()
-      )
+    function findUser(firstName: string, lastName: string) {
+      return players?.find(
+        (p) =>
+          firstName.toLowerCase() ===
+            latinize(p.first_name).replace("'", ' ').trim().toLowerCase() &&
+          lastName.toLowerCase() ===
+            latinize(p.last_name).replace("'", ' ').trim().toLowerCase()
+      );
     }
 
-    function handleRow(row:string) {
+    function handleRow(row: string) {
       // "135","Haudenschild, Fabian","IT","0","Bandera, Michele","IT","0"
-      const [table, nameP1,,, nameP2] = row.split('","').map(s => s.replaceAll('"',''));
+      const [table, nameP1, , , nameP2] = row
+        .split('","')
+        .map((s) => s.replaceAll('"', ''));
 
-
-      if(table === '-') {
-        const [lastName1, firstName1] = nameP1.split(", ");
+      if (table === '-') {
+        const [lastName1, firstName1] = nameP1.split(', ');
         const p = findUser(firstName1, lastName1);
         p && updateTableNumber(p.id, 0);
 
         return;
       }
 
-      const [lastName1, firstName1] = nameP1.split(", ");
+      const [lastName1, firstName1] = nameP1.split(', ');
       const p1 = findUser(firstName1, lastName1);
       p1 && updateTableNumber(p1.id, +table);
 
-      const [lastName2, firstName2] = nameP2.split(", ");
+      const [lastName2, firstName2] = nameP2.split(', ');
       const p2 = findUser(firstName2, lastName2);
-      if(p2 === undefined) {
+      if (p2 === undefined) {
         console.log('Non ho trovato', [firstName2, lastName2, table]);
       }
       p2 && updateTableNumber(p2.id, +table);
     }
-
-  }
-
+  };
 
   return (
     <div className="container mx-auto px-4 mt-6">
@@ -179,12 +196,12 @@ export default function Admin() {
           <select
             className="w-full"
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as 'dc'|'name')}
+            onChange={(e) => setSortBy(e.target.value as 'dc' | 'name')}
           >
             <option value="name">Name</option>
             <option value="dc">DC</option>
             <option value="table">Table</option>
-            </select>
+          </select>
         </div>
         <div className="md:flex-1 pr-4">
           <label className="block font-bold text-lg">Player:</label>
@@ -199,7 +216,8 @@ export default function Admin() {
 
       <h1>{filtered.length} players found</h1>
 
-      <button onClick={downloadCsv}>Download csv players</button>{' - '}
+      <button onClick={downloadCsv}>Download csv players</button>
+      {' - '}
       <button onClick={importTables}>Import tables from Walter</button>
 
       <table className="table-auto w-full">
@@ -218,11 +236,7 @@ export default function Admin() {
               key={player.id}
               className={i % 2 === 0 ? undefined : 'bg-gray-50'}
             >
-              <td>
-                {
-                //@ts-expect-error
-                player.table}
-              </td>
+              <td>{player.table}</td>
               <td>
                 <Link href={`/deckcheck/${player.id}`}>
                   <a className="hover:underline">
