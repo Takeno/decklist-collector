@@ -48,11 +48,10 @@ export default function Login() {
 
   return (
     <div className="container mx-auto px-4 mt-6 flex flex-col flex-1 justify-center">
-      <PageTitle>Welcome to 4Seasons!</PageTitle>
+      <PageTitle>Welcome to Paupergeddon Winter Edition!</PageTitle>
 
       <p className="text-xl">
-        Here you can reserve your seat, pay the entry fee and manage your
-        decklists.
+        Here you can manage and submit your decklists.
         <br />
         Enter your email and receive an invite link to manage your decklists.
       </p>

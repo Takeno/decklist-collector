@@ -28,21 +28,6 @@ export default function TournamentStatus({tournament, player}: Props) {
               {tournament.format}
             </dd>
           </div>
-          <div className="sm:col-span-1">
-            <dt className="font-medium text-gray-500">Entry Fee</dt>
-            <dd className="mt-1 text-gray-900">
-              {new Intl.NumberFormat(undefined, {
-                style: 'currency',
-                currency: 'EUR',
-              }).format(tournament.price / 100)}
-            </dd>
-          </div>
-          {player?.status && (
-            <div className="sm:col-span-1">
-              <dt className="font-medium text-gray-500">Status</dt>
-              <dd className="mt-1 text-gray-900">{player?.status}</dd>
-            </div>
-          )}
           {player && (
             <div className="sm:col-span-1">
               <dt className="font-medium text-gray-500">Player</dt>

@@ -11,7 +11,7 @@ export default function MyApp({Component, pageProps, router}: AppProps) {
   return (
     <>
       <Head>
-        <title>Welcome to 4Seasons!</title>
+        <title>Welcome to Paupergeddon Winter Edition!</title>
         <meta
           name="description"
           content="Register, pay and upload your decklist fully online"

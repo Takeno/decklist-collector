@@ -13,6 +13,7 @@ type Props = {
 type TournamentRegistrationForm = {
   first_name: string;
   last_name: string;
+  order_number: string;
 };
 
 export default function TournamentRegistration({tournament}: Props) {
@@ -31,13 +32,15 @@ export default function TournamentRegistration({tournament}: Props) {
         first_name: data.first_name,
         last_name: data.last_name,
         email: user.email,
-        status: 'payment-pending',
+        status: 'paid',
         user_id: user.id,
         tournament_id: tournament.id,
         deckchecked: false,
         notes: '',
         table: null,
-        additional_data: {},
+        additional_data: {
+          orderNumber: data.order_number,
+        },
       });
       mutate(`/player/${user.id}/${tournament.id}`);
     } catch (e: any) {
@@ -112,7 +115,19 @@ export default function TournamentRegistration({tournament}: Props) {
               <p className="text-red-700">This field is required</p>
             )}
           </div>
-
+        </div>
+        <div className="flex flex-col md:flex-row md:justify-between">
+          <div className="md:flex-1 pr-4">
+            <label className="block font-bold text-lg">Order number:</label>
+            <input
+              type="text"
+              className="w-full"
+              {...register('order_number', {required: true})}
+            />
+            {errors.order_number && (
+              <p className="text-red-700">This field is required</p>
+            )}
+          </div>
           <div className="md:flex-1 pr-4">
             <label className="block font-bold text-lg">Email:</label>
             <input type="text" className="w-full" disabled value={user.email} />

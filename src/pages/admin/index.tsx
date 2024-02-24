@@ -129,10 +129,12 @@ export default function Admin() {
 
     return players
       .filter((d) => status === '' || d.status === status)
-      .filter((d) =>
-        `${d.first_name} ${d.last_name}`
-          .toLowerCase()
-          .includes(nameFilter.toLowerCase())
+      .filter(
+        (d) =>
+          `${d.first_name} ${d.last_name}`
+            .toLowerCase()
+            .includes(nameFilter.toLowerCase()) ||
+          d.additional_data.orderNumber?.startsWith(nameFilter)
       )
       .map((d) => ({
         ...d,
@@ -194,6 +196,7 @@ export default function Admin() {
           <tr className="border-b font-bold">
             <td>Player</td>
             <td className="hidden md:block">Torneo</td>
+            <td>Order Number</td>
             <td>Status</td>
             <td></td>
           </tr>
@@ -211,6 +214,7 @@ export default function Admin() {
                 </span>
               </td>
               <td className="hidden md:block">{player.tournaments.name}</td>
+              <td>{player.additional_data.orderNumber}</td>
               <td>{player.status}</td>
               <td>
                 {player.status === 'payment-pending' && (
