@@ -28,7 +28,8 @@ export default function TournamentRegistration({tournament}: Props) {
   > = async (data) => {
     try {
       await createPlayerTournament({
-        ...data,
+        first_name: data.first_name,
+        last_name: data.last_name,
         email: user.email,
         status: 'payment-pending',
         user_id: user.id,
@@ -36,6 +37,7 @@ export default function TournamentRegistration({tournament}: Props) {
         deckchecked: false,
         notes: '',
         table: null,
+        additional_data: {},
       });
       mutate(`/player/${user.id}/${tournament.id}`);
     } catch (e: any) {

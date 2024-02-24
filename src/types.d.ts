@@ -42,6 +42,7 @@ type TournamentPlayerBasicInfo = {
   deckchecked: boolean;
   notes: string;
   table: number | null;
+  additional_data: Record<string, any>;
 };
 
 type TournamentPlayerPending = TournamentPlayerBasicInfo & {
