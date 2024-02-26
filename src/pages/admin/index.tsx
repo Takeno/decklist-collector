@@ -13,6 +13,7 @@ import {
   updatePlayerTournament,
 } from '../../utils/supabase';
 import {generateAndDownloadDecklists} from '../../utils/guidi-exporter';
+import {isPreorder} from '../../utils/orders';
 
 export default function Admin() {
   useRequiredAdmin();
@@ -88,6 +89,33 @@ export default function Admin() {
         'player',
         p.status === 'payment-pending' ? 'not enrolled' : 'enrolled',
         p.email,
+      ])
+    );
+
+    const txt = content.map((row) => row.join(';')).join('\n');
+
+    const a = document.createElement('a');
+    const url = window.URL.createObjectURL(new Blob([txt], {type: 'text/csv'}));
+    a.href = url;
+    a.download = 'players.csv';
+
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  }, [players]);
+
+  const downloadCsv2 = useCallback(() => {
+    if (players === undefined) {
+      return;
+    }
+
+    const content = [['firstName', 'lastName', 'email', 'orderNumber']].concat(
+      players.map((p) => [
+        p.first_name,
+        p.last_name,
+        p.email,
+        p.additional_data.orderNumber,
       ])
     );
 
@@ -189,7 +217,8 @@ export default function Admin() {
         </div>
       </div>
       <h1>{filtered.length} players found</h1>
-      <button onClick={downloadCsv}>Download csv players</button> -{' '}
+      <button onClick={downloadCsv}>Download CSV for WLTR</button> -{' '}
+      <button onClick={downloadCsv2}>Download CSV playtime</button> -{' '}
       <button onClick={downloadDecklists}>Download all decklists</button>
       <table className="table-auto w-full">
         <thead>
@@ -214,7 +243,15 @@ export default function Admin() {
                 </span>
               </td>
               <td className="hidden md:block">{player.tournaments.name}</td>
-              <td>{player.additional_data.orderNumber}</td>
+              <td
+                className={
+                  isPreorder(player.additional_data.orderNumber) === false
+                    ? 'text-red-500'
+                    : ''
+                }
+              >
+                {player.additional_data.orderNumber}
+              </td>
               <td>{player.status}</td>
               <td>
                 {player.status === 'payment-pending' && (
