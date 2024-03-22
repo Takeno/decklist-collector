@@ -137,6 +137,7 @@ export default function ShowDecklist() {
           'Artifact',
           'Enchantment',
           'Land',
+          'Stickers',
           'Other',
           'Sideboard',
         ].map((type) => {

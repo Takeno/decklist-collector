@@ -9,6 +9,7 @@ export type CardType =
   | 'Creature'
   | 'Planeswalker'
   | 'Attraction'
+  | 'Stickers'
   | 'Other'
   | 'Sideboard';
 
@@ -67,7 +68,7 @@ export function parseList(input: string): DecklistParsed {
       cards.push({
         amount: amount,
         name: name,
-        type: type === 'Attraction' ? type : 'Sideboard',
+        type: type === 'Attraction' || type === 'Stickers' ? type : 'Sideboard',
         validated,
       });
     }
@@ -76,7 +77,7 @@ export function parseList(input: string): DecklistParsed {
   return {
     cards,
     maindeck: cards
-      .filter((c) => c.type !== 'Sideboard')
+      .filter((c) => c.type !== 'Sideboard' && c.type !== 'Stickers')
       .reduce((a, c) => a + c.amount, 0),
     sideboard: cards
       .filter((c) => c.type === 'Sideboard')
@@ -104,6 +105,7 @@ export function extractType(card: string): CardType {
     'Instant',
     'Sorcery',
     'Attraction',
+    'Stickers',
   ] as CardType[]) {
     if (types.includes(myType)) {
       return myType;

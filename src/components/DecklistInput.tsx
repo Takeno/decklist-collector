@@ -99,7 +99,9 @@ export default function DecklistInput({format, value, onChange}: Props) {
       const index = cards.findIndex(
         (c) =>
           c.name === card &&
-          ((c.type === 'Sideboard') === sideboard || c.type === 'Attraction')
+          ((c.type === 'Sideboard') === sideboard ||
+            c.type === 'Attraction' ||
+            c.type === 'Stickers')
       );
 
       if (index === -1) {
@@ -136,7 +138,7 @@ export default function DecklistInput({format, value, onChange}: Props) {
   };
 
   const maindeckCount = decklist
-    .filter((c) => c.type !== 'Sideboard')
+    .filter((c) => c.type !== 'Sideboard' && c.type !== 'Stickers')
     .reduce((a, c) => a + c.amount, 0);
 
   const sideboardCount = decklist
@@ -290,7 +292,7 @@ export default function DecklistInput({format, value, onChange}: Props) {
           </div>
 
           <div className="columns-2">
-            {['Sideboard', 'Attraction'].map((type) => {
+            {['Sideboard', 'Attraction', 'Stickers'].map((type) => {
               if (decklist.some((c) => c.type === type) === false) {
                 return null;
               }
